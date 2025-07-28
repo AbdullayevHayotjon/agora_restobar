@@ -33,7 +33,7 @@ const translations = {
     menu: 'Menu',
     news: 'News',
     contact: 'Contact',
-    booking: 'Book Table'
+    booking: 'Book a Table'
   }
 };
 

@@ -186,7 +186,7 @@ export function About({ language }: AboutProps) {
         <div className="mt-16">
           <div className="relative h-96 rounded-2xl overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80"
+              src="/agora_1.jpg"
               alt="Restaurant Interior"
               className="w-full h-full object-cover"
             />

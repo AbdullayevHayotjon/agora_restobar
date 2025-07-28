@@ -35,14 +35,25 @@ const menuTranslations = {
 
 // Demo data - to be replaced with API data
 const demoCategories = [
-  { id: '1', name: { uz: 'Osh', ru: 'Плов', en: 'Plov' }, type: 'osh' },
-  { id: '2', name: { uz: 'Steak', ru: 'Стейк', en: 'Steak' }, type: 'steak' },
-  { id: '3', name: { uz: 'Ichimliklar', ru: 'Напитки', en: 'Drinks' }, type: 'drinks' },
-  { id: '4', name: { uz: 'Kalyan', ru: 'Кальян', en: 'Hookah' }, type: 'hookah' },
-  { id: '5', name: { uz: 'Salatlar', ru: 'Салаты', en: 'Salads' }, type: 'salads' },
-  { id: '6', name: { uz: 'Sho\'rvalar', ru: 'Супы', en: 'Soups' }, type: 'soups' },
-  { id: '7', name: { uz: 'Desert', ru: 'Десерт', en: 'Dessert' }, type: 'dessert' },
-  { id: '8', name: { uz: 'Mazzalar', ru: 'Закуски', en: 'Appetizers' }, type: 'appetizers' },
+  { id: '1', name: { uz: 'Salatlar', ru: 'Салаты', en: 'Salads' }, type: 'salads' },
+  { id: '2', name: { uz: 'Sho\'rvalar', ru: 'Супы', en: 'Soups' }, type: 'soups' },
+  { id: '3', name: { uz: 'Makaron taomlari', ru: 'Паста', en: 'Pasta' }, type: 'pasta' },
+  { id: '4', name: { uz: 'Issiq taomlar', ru: 'Горячие блюдо', en: 'Hot Dishes' }, type: 'hotDishes' },
+  { id: '5', name: { uz: 'Grilda tayyorlangan taomlar', ru: 'Блюда на грилье', en: 'Grilled Dishes' }, type: 'grilledDishes' },
+  { id: '6', name: { uz: 'Baliqli taomlar', ru: 'Рыбное бдюдо', en: 'Fish Dishes' }, type: 'fishDishes' },
+  { id: '7', name: { uz: 'Issiq gazaklar', ru: 'Горячие закуски', en: 'Hot Appetizers' }, type: 'hotAppetizers' },
+  { id: '8', name: { uz: 'Kavkazcha shashliklar', ru: 'Кавказские Шашлыки', en: 'Caucasian Shashlik' }, type: 'caucasianShashlik' },
+  { id: '9', name: { uz: 'Garnirlar', ru: 'Гарниры', en: 'Side Dishes' }, type: 'sideDishes' },
+  { id: '10', name: { uz: 'Souslar', ru: 'Соусы', en: 'Sauces' }, type: 'sauces' },
+  { id: '11', name: { uz: 'Sovuq gazaklar', ru: 'Холодные закуски', en: 'Cold Appetizers' }, type: 'coldAppetizers' },
+  { id: '12', name: { uz: 'Choylar', ru: 'Чаи', en: 'Tea' }, type: 'tea' },
+  { id: '13', name: { uz: 'Freysh sharbatlar', ru: 'Фрешы', en: 'Fresh Juices' }, type: 'freshJuices' },
+  { id: '14', name: { uz: 'Alkogolli kokteyllar', ru: 'Алкогольные коктели', en: 'Alcoholic Cocktails' }, type: 'alcoholicCocktails' },
+  { id: '15', name: { uz: 'Qahva', ru: 'Кофе', en: 'Coffee' }, type: 'coffee' },
+  { id: '16', name: { uz: 'Limonadlar', ru: 'Лимонады', en: 'Lemonades' }, type: 'lemonades' },
+  { id: '17', name: { uz: 'Alkogol', ru: 'Алкоголь', en: 'Alcohol' }, type: 'alcohol' },
+  { id: '18', name: { uz: 'Ichimliklar', ru: 'Напитки', en: 'Drinks' }, type: 'drinks' },
+  { id: '19', name: { uz: 'Kalyan', ru: 'Кальян', en: 'Hookah' }, type: 'hookah' },
 ];
 
 const demoMenuItems = [
@@ -52,7 +63,7 @@ const demoMenuItems = [
     description: { uz: 'An\'anaviy toshkent oshi, yumshoq go\'sht va aromat bilan', ru: 'Традиционный ташкентский плов с мягким мясом и ароматом', en: 'Traditional Tashkent plov with tender meat and aroma' },
     price: 35000,
     image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-    type: 'osh'
+    type: 'salads'
   },
   {
     id: '2',
@@ -60,7 +71,7 @@ const demoMenuItems = [
     description: { uz: 'Yumshoq beef steak, kartoshka garniri bilan', ru: 'Нежный говяжий стейк с картофельным гарниром', en: 'Tender beef steak with potato side' },
     price: 85000,
     image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-    type: 'steak'
+    type: 'soups'
   },
   {
     id: '3',
@@ -68,7 +79,7 @@ const demoMenuItems = [
     description: { uz: 'Yangi limon va yalpizdan tayyorlangan limonad', ru: 'Лимонад из свежего лимона и мяты', en: 'Lemonade made from fresh lemon and mint' },
     price: 15000,
     image: 'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-    type: 'drinks'
+    type: 'salads'
   }
 ];
 
