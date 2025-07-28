@@ -58,10 +58,11 @@ export default {
 					foreground: 'hsl(var(--success-foreground))'
 				},
 				restaurant: {
-					green: 'hsl(var(--restaurant-green))',
-					'green-light': 'hsl(var(--restaurant-green-light))',
-					'green-dark': 'hsl(var(--restaurant-green-dark))'
-				},
+	green: 'hsl(20, 89%, 58%)',
+	'green-light': 'hsl(20, 89%, 78%)',
+	'green-dark': 'hsl(20, 89%, 38%)'
+},
+
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
