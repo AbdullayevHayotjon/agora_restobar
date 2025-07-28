@@ -114,58 +114,59 @@ export function Menu({ language }: MenuProps) {
         </div>
 
         {/* Categories */}
-        <div className="relative mb-12">
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => scrollCategories('left')}
-              className="mr-2 flex-shrink-0"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            
-            <div 
-              id="categories-container"
-              className="flex space-x-4 overflow-x-auto scrollbar-hide flex-1"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              {visibleCategories.map((category) => (
-                <Button
-                  key={category.id}
-                  variant={selectedCategory.id === category.id ? "restaurant" : "outline"}
-                  className={`whitespace-nowrap flex-shrink-0 ${
-                    selectedCategory.id === category.id 
-                      ? 'shadow-glow' 
-                      : 'hover:border-primary hover:text-primary'
-                  }`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category.name[language]}
-                </Button>
-              ))}
-              
-              {!showAllCategories && demoCategories.length > 6 && (
-                <Button
-                  variant="ghost"
-                  className="whitespace-nowrap flex-shrink-0 text-primary"
-                  onClick={() => setShowAllCategories(true)}
-                >
-                  {t.viewAll}
-                </Button>
-              )}
-            </div>
+<div className="relative mb-12">
+  <div className="flex items-center">
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => scrollCategories('left')}
+      className="mr-2 flex-shrink-0"
+    >
+      <ChevronLeft className="h-4 w-4" />
+    </Button>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => scrollCategories('right')}
-              className="ml-2 flex-shrink-0"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+    <div
+      id="categories-container"
+      className="flex space-x-4 overflow-x-auto scrollbar-hide flex-1"
+      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+    >
+      {visibleCategories.map((category) => (
+        <Button
+          key={category.id}
+          onClick={() => setSelectedCategory(category)}
+          className={`whitespace-nowrap flex-shrink-0 border border-gray-300 transition-all duration-200
+            ${
+              selectedCategory.id === category.id
+                ? 'bg-[#F3732F] text-white shadow-md'
+                : 'bg-white text-black hover:bg-[#F3732F] hover:text-white hover:border-[#F3732F]'
+            }`}
+        >
+          {category.name[language]}
+        </Button>
+      ))}
+
+      {!showAllCategories && demoCategories.length > 6 && (
+        <Button
+          variant="ghost"
+          className="whitespace-nowrap flex-shrink-0 text-primary"
+          onClick={() => setShowAllCategories(true)}
+        >
+          {t.viewAll}
+        </Button>
+      )}
+    </div>
+
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => scrollCategories('right')}
+      className="ml-2 flex-shrink-0"
+    >
+      <ChevronRight className="h-4 w-4" />
+    </Button>
+  </div>
+</div>
+
 
         {/* Menu Items */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

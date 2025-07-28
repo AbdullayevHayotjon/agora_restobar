@@ -46,7 +46,7 @@ export function Hero({ language }: HeroProps) {
       {/* Background with overlay */}
       <div className="absolute inset-0 bg-gradient-hero"></div>
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-fixed opacity-30"
+        className="absolute inset-0 bg-cover bg-center bg-fixed opacity-40"
         style={{
           backgroundImage: "url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')"
         }}
