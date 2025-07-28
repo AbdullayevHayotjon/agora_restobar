@@ -4,7 +4,7 @@ type Language = 'uz' | 'ru' | 'en';
 
 const footerTranslations = {
   uz: {
-    description: 'Agora Restobar - zamonaviy va shinam muhitda sifatli xizmat ko\'rsatuvchi restoran.',
+    description: 'AGORA resto&bar - zamonaviy va shinam muhitda sifatli xizmat ko\'rsatuvchi restoran.',
     quickLinks: 'Tezkor havolalar',
     contact: 'Aloqa ma\'lumotlari',
     followUs: 'Bizni kuzatib boring',
@@ -19,7 +19,7 @@ const footerTranslations = {
     }
   },
   ru: {
-    description: 'Agora Restobar - ресторан, предоставляющий качественный сервис в современной и уютной атмосфере.',
+    description: 'AGORA resto&bar - ресторан, предоставляющий качественный сервис в современной и уютной атмосфере.',
     quickLinks: 'Быстрые ссылки',
     contact: 'Контактная информация',
     followUs: 'Следите за нами',
@@ -34,7 +34,7 @@ const footerTranslations = {
     }
   },
   en: {
-    description: 'Agora Restobar - a restaurant providing quality service in a modern and cozy atmosphere.',
+    description: 'AGORA resto&bar - a restaurant providing quality service in a modern and cozy atmosphere.',
     quickLinks: 'Quick Links',
     contact: 'Contact Information',
     followUs: 'Follow Us',
@@ -51,12 +51,17 @@ const footerTranslations = {
 };
 
 interface FooterProps {
+  activeSection: string;
   language: Language;
+  setLanguage: (lang: Language) => void;
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
 }
 
-export function Footer({ language }: FooterProps) {
+export function Footer({ language, theme }: FooterProps) {
   const t = footerTranslations[language];
   const currentYear = new Date().getFullYear();
+
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -77,23 +82,23 @@ export function Footer({ language }: FooterProps) {
   const contactInfo = [
     {
       icon: MapPin,
-      text: language === 'uz' ? 'Toshkent shahri, Yunusobod tumani' : 
-            language === 'ru' ? 'г. Ташкент, Юнусабадский р-н' : 
-            'Tashkent city, Yunusabad district'
+      text: language === 'uz' ? 'Toshkent shahar, Yunusobod tumani, Xalqobod ko‘chasi, 6-uy' :
+        language === 'ru' ? 'город Ташкент, Юнусабадский район, улица Халкабад, дом 6' :
+          'Tashkent city, Yunusabad district, Khalkabad street, house 6'
     },
     {
       icon: Phone,
-      text: '+998 90 123 45 67'
+      text: '+998 97 422 88 88'
     },
     {
       icon: Mail,
-      text: 'info@agorarestobar.uz'
+      text: 'agorarestobaruz@gmail.com'
     },
     {
       icon: Clock,
-      text: language === 'uz' ? 'Har kuni 10:00 - 02:00' : 
-            language === 'ru' ? 'Ежедневно 10:00 - 02:00' : 
-            'Daily 10:00 - 02:00'
+      text: language === 'uz' ? 'Har kuni 10:00 - 03:00' :
+        language === 'ru' ? 'Ежедневно 10:00 - 03:00' :
+          'Daily 10:00 - 03:00'
     }
   ];
 
@@ -101,7 +106,7 @@ export function Footer({ language }: FooterProps) {
     {
       icon: Instagram,
       name: 'Instagram',
-      url: '#',
+      url: 'https://www.instagram.com/agora.restobar',
       color: 'hover:text-pink-500'
     },
     {
@@ -124,16 +129,20 @@ export function Footer({ language }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand & Description */}
           <div className="lg:col-span-1">
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">A</span>
+            <div className="lg:col-span-1">
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="flex items-center space-x-2">
+                  <img
+                    src={theme === 'light' ? '/logo_black.png' : '/logo_white.png'}
+                    alt="Agora Restobar logotipi"
+                    className="w-[160px] h-[160px] object-contain"
+                  />
+                </div>
               </div>
-              <span className="text-xl font-bold text-foreground">Agora Restobar</span>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                {t.description}
+              </p>
             </div>
-            <p className="text-muted-foreground leading-relaxed mb-6">
-              {t.description}
-            </p>
-            
             {/* Social Links */}
             <div>
               <h3 className="font-semibold text-foreground mb-4">{t.followUs}</h3>
@@ -193,12 +202,12 @@ export function Footer({ language }: FooterProps) {
         <div className="border-t border-border mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-muted-foreground text-sm">
-              © {currentYear} Agora Restobar. {t.rights}
+              © {currentYear} AGORA resto&bar. {t.rights}
             </p>
-            
+
             {/* Admin Link */}
-            <a 
-              href="/admin" 
+            <a
+              href="/admin"
               className="text-xs text-muted-foreground/50 hover:text-primary transition-colors"
             >
               Admin Panel
