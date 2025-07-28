@@ -185,12 +185,13 @@ export function Contact({ language }: ContactProps) {
                 className="absolute inset-0 w-full h-full"
               ></iframe>
 
-              <div className="absolute z-10 top-0 left-0 p-4 text-center bg-white w-full">
-                <h3 className="text-xl font-bold text-foreground mb-1">
-                  {t.locationTitle}
-                </h3>
-                <p className="text-muted-foreground">{t.addressText}</p>
-              </div>
+              <div className="absolute z-10 top-0 left-0 p-4 text-center bg-background w-full border-b border-border">
+  <h3 className="text-xl font-bold text-foreground mb-1">
+    {t.locationTitle}
+  </h3>
+  <p className="text-muted-foreground">{t.addressText}</p>
+</div>
+
             </div>
           </Card>
         </div>

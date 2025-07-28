@@ -12,14 +12,14 @@ const heroTranslations = {
     bookTable: 'Stol bron qilish'
   },
   ru: {
-    title: 'Agora Restobar',
+    title: 'AGORA resto&bar',
     subtitle: 'Гармония вкуса и качества',
     description: 'Добро пожаловать в мир современной атмосферы и уникальных вкусов. Каждое наше блюдо - произведение искусства.',
     viewMenu: 'Посмотреть меню',
     bookTable: 'Забронировать стол'
   },
   en: {
-    title: 'Agora Restobar',
+    title: 'AGORA resto&bar',
     subtitle: 'Harmony of taste and quality',
     description: 'Welcome to the world of modern atmosphere and unique flavors. Every dish is a work of art.',
     viewMenu: 'View Menu',

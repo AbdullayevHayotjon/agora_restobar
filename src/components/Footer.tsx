@@ -131,11 +131,11 @@ export function Footer({ language, theme }: FooterProps) {
           <div className="lg:col-span-1">
             <div className="lg:col-span-1">
               <div className="flex items-center space-x-2 mb-6">
-                <div className="flex items-center space-x-2">
+                <div className="flex items-start space-x-2 mb-6">
                   <img
                     src={theme === 'light' ? '/logo_black.png' : '/logo_white.png'}
                     alt="Agora Restobar logotipi"
-                    className="w-[160px] h-[160px] object-contain"
+                    className="w-[120px] h-auto object-contain"
                   />
                 </div>
               </div>
