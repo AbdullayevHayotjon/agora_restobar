@@ -5,7 +5,7 @@ type Language = 'uz' | 'ru' | 'en';
 
 const heroTranslations = {
   uz: {
-    title: 'Agora Restobar',
+    title: 'AGORA resto&bar',
     subtitle: 'Ta\'m va sifatning uyg\'unligi',
     description: 'Zamonaviy muhit va noyob ta\'mlar dunyosiga xush kelibsiz. Bizda har bir taom - san\'at asari.',
     viewMenu: 'Menyuni ko\'rish',
