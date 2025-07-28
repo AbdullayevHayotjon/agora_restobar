@@ -173,28 +173,28 @@ export function Contact({ language }: ContactProps) {
           </div>
 
           {/* Map */}
-          <a
-            href={t.addressUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group block hover:shadow-elegant transition-all duration-300 hover:-translate-y-1"
-          >
-            <Card className="overflow-hidden h-96 lg:h-full">
-              <div className="relative w-full h-full bg-muted/30 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-foreground mb-2">
-                    {t.locationTitle}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {t.addressText}
-                  </p>
-                </div>
-                {/* In a real application, you would integrate with Google Maps or another map service */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-success/10 opacity-50"></div>
+          <Card className="overflow-hidden h-96 lg:h-full">
+            <div className="relative w-full h-full bg-muted/30">
+              <iframe
+                title="Google Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3222.4440209531776!2d69.28747669411496!3d41.32690108289397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38ae8be3372f2549%3A0x6ffd2ad248d469ee!2sESADO%20Assistance!5e1!3m2!1suz!2s!4v1753716628961!5m2!1suz!2s"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={true}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="absolute inset-0 w-full h-full"
+              ></iframe>
+
+              <div className="absolute z-10 top-0 left-0 p-4 text-center bg-white w-full">
+                <h3 className="text-xl font-bold text-foreground mb-1">
+                  {t.locationTitle}
+                </h3>
+                <p className="text-muted-foreground">{t.addressText}</p>
               </div>
-            </Card>
-          </a>
+            </div>
+          </Card>
         </div>
       </div>
     </section>
