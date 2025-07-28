@@ -150,9 +150,7 @@ export function Contact({ language }: ContactProps) {
             <Card className="group hover:shadow-elegant transition-all duration-300">
               <CardContent className="p-6">
                 <h3 className="text-lg font-bold text-foreground mb-4 flex items-center">
-                  <div className="w-12 h-12 rounded-full bg-gradient-primary/10 flex items-center justify-center mr-3">
-                    <Instagram className="h-6 w-6 text-primary" />
-                  </div>
+                  
                   {t.followUs}
                 </h3>
                 <div className="flex space-x-4">

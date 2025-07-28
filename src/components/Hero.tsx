@@ -43,65 +43,68 @@ export function Hero({ language }: HeroProps) {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background with overlay */}
-      <div className="absolute inset-0 bg-gradient-hero"></div>
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-fixed opacity-100"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')"
-        }}
-      ></div>
-      
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-float"></div>
-        <div className="absolute top-3/4 right-1/4 w-48 h-48 bg-success/10 rounded-full blur-xl animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-1/4 left-1/3 w-24 h-24 bg-primary/10 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
-      </div>
+  {/* Soft dark overlay for text clarity */}
+  <div className="absolute inset-0 bg-black/40 z-10"></div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        <div className="animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
-            {t.title}
-          </h1>
-          <p className="text-xl md:text-2xl text-white/90 mb-4 font-light">
-            {t.subtitle}
-          </p>
-          <p className="text-lg text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
-            {t.description}
-          </p>
-          
-          {/* Action buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button
-              variant="restaurant"
-              size="lg"
-              onClick={() => scrollToSection('menu')}
-              className="text-lg px-8 py-4 h-auto group"
-            >
-              <ChefHat className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
-              {t.viewMenu}
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => scrollToSection('booking')}
-              className="text-lg px-8 py-4 h-auto bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary group backdrop-blur-sm"
-            >
-              <Calendar className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              {t.bookTable}
-            </Button>
-          </div>
-        </div>
-      </div>
+  {/* Background image */}
+  <div 
+    className="absolute inset-0 bg-cover bg-center bg-fixed opacity-100 z-0"
+    style={{
+      backgroundImage: "url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')"
+    }}
+  ></div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
-        </div>
+  {/* Floating blurred elements (optional) */}
+  <div className="absolute inset-0 z-20 pointer-events-none">
+    <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-primary/10 rounded-full blur-xl animate-float"></div>
+    <div className="absolute top-3/4 right-1/4 w-48 h-48 bg-success/10 rounded-full blur-xl animate-float" style={{ animationDelay: '1s' }}></div>
+    <div className="absolute bottom-1/4 left-1/3 w-24 h-24 bg-primary/10 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+  </div>
+
+  {/* Main Content */}
+  <div className="relative z-30 text-center px-4 max-w-4xl mx-auto pt-24 md:pt-32">
+    <div className="animate-fade-in">
+      <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]">
+        {t.title}
+      </h1>
+      <p className="text-xl md:text-2xl text-white mb-4 font-light drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+        {t.subtitle}
+      </p>
+      <p className="text-lg text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
+        {t.description}
+      </p>
+
+      {/* Buttons */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <Button
+          variant="restaurant"
+          size="lg"
+          onClick={() => scrollToSection('menu')}
+          className="text-lg px-8 py-4 h-auto group"
+        >
+          <ChefHat className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
+          {t.viewMenu}
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => scrollToSection('booking')}
+          className="text-lg px-8 py-4 h-auto bg-white/10 border-white/30 text-white hover:bg-white hover:text-primary group backdrop-blur-sm"
+        >
+          <Calendar className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+          {t.bookTable}
+        </Button>
       </div>
-    </section>
+    </div>
+  </div>
+
+  {/* Scroll indicator */}
+  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 animate-bounce">
+    <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+      <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
+    </div>
+  </div>
+</section>
+
   );
 }
