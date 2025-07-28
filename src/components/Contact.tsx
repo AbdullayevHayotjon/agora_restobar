@@ -12,11 +12,13 @@ const contactTranslations = {
     workingHours: 'Ish vaqti',
     email: 'Email',
     social: 'Ijtimoiy tarmoqlar',
-    addressText: 'Toshkent shahri, Yunusobod tumani, 123-ko\'cha, 45-uy',
-    phoneText: '+998 90 123 45 67',
-    emailText: 'info@agorarestobar.uz',
-    workingText: 'Har kuni 10:00 dan 02:00 gacha',
-    followUs: 'Bizni kuzatib boring'
+    addressText: 'Toshkent shahar, Yunusobod tumani, Xalqobod ko‘chasi, 6-uy',
+    phoneText: '+998 97 422 88 88',
+    emailText: 'agorarestobaruz@gmail.com',
+    workingText: 'Har kuni 10:00 dan 03:00 gacha',
+    followUs: 'Bizni kuzatib boring',
+    locationTitle: 'Bizning manzilimiz',
+    addressUrl: 'https://maps.app.goo.gl/DQmdnPgL3a8fkwRr9'
   },
   ru: {
     title: 'Контакты',
@@ -26,11 +28,13 @@ const contactTranslations = {
     workingHours: 'Рабочие часы',
     email: 'Email',
     social: 'Социальные сети',
-    addressText: 'г. Ташкент, Юнусабадский р-н, ул. 123, дом 45',
-    phoneText: '+998 90 123 45 67',
-    emailText: 'info@agorarestobar.uz',
-    workingText: 'Ежедневно с 10:00 до 02:00',
-    followUs: 'Следите за нами'
+    addressText: 'город Ташкент, Юнусабадский район, улица Халкабад, дом 6',
+    phoneText: '+998 97 422 88 88',
+    emailText: 'agorarestobaruz@gmail.com',
+    workingText: 'Ежедневно с 10:00 до 03:00',
+    followUs: 'Следите за нами',
+    locationTitle: 'Наш адрес',
+    addressUrl: 'https://maps.app.goo.gl/DQmdnPgL3a8fkwRr9'
   },
   en: {
     title: 'Contact',
@@ -40,11 +44,13 @@ const contactTranslations = {
     workingHours: 'Working Hours',
     email: 'Email',
     social: 'Social Media',
-    addressText: 'Tashkent city, Yunusabad district, 123 street, house 45',
-    phoneText: '+998 90 123 45 67',
+    addressText: 'Tashkent city, Yunusabad district, Khalkabad street, house 6',
+    phoneText: '+998 97 422 88 88',
     emailText: 'info@agorarestobar.uz',
-    workingText: 'Daily from 10:00 to 02:00',
-    followUs: 'Follow us'
+    workingText: 'Daily from 10:00 to 03:00',
+    followUs: 'Follow us',
+    locationTitle: 'Our Location',
+    addressUrl: 'https://maps.app.goo.gl/DQmdnPgL3a8fkwRr9'
   }
 };
 
@@ -86,7 +92,7 @@ export function Contact({ language }: ContactProps) {
     {
       icon: Instagram,
       name: 'Instagram',
-      url: '#',
+      url: 'https://www.instagram.com/agora.restobar',
       color: 'text-pink-500'
     },
     {
@@ -120,8 +126,8 @@ export function Contact({ language }: ContactProps) {
           <div className="space-y-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {contactInfo.map((info, index) => (
-                <Card 
-                  key={index} 
+                <Card
+                  key={index}
                   className="group hover:shadow-elegant transition-all duration-300 hover:-translate-y-1"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
@@ -167,13 +173,18 @@ export function Contact({ language }: ContactProps) {
           </div>
 
           {/* Map */}
-          <div className="relative">
+          <a
+            href={t.addressUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group block hover:shadow-elegant transition-all duration-300 hover:-translate-y-1"
+          >
             <Card className="overflow-hidden h-96 lg:h-full">
               <div className="relative w-full h-full bg-muted/30 flex items-center justify-center">
                 <div className="text-center">
                   <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-foreground mb-2">
-                    Bizning manzilimiz
+                    {t.locationTitle}
                   </h3>
                   <p className="text-muted-foreground">
                     {t.addressText}
@@ -183,7 +194,7 @@ export function Contact({ language }: ContactProps) {
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-success/10 opacity-50"></div>
               </div>
             </Card>
-          </div>
+          </a>
         </div>
       </div>
     </section>
