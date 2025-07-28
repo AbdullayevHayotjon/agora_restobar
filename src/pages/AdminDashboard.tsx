@@ -1,0 +1,149 @@
+import { useState } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { ChefHat, Megaphone, LogOut, Menu as MenuIcon, X } from 'lucide-react';
+
+interface AdminDashboardProps {
+  onLogout: () => void;
+}
+
+export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const sidebarItems = [
+    {
+      id: 'menu',
+      label: 'Menyular',
+      icon: ChefHat,
+      path: '/admin/menu'
+    },
+    {
+      id: 'banners',
+      label: 'Reklamalar',
+      icon: Megaphone,
+      path: '/admin/banners'
+    }
+  ];
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsSidebarOpen(false);
+  };
+
+  const handleLogout = () => {
+    onLogout();
+    navigate('/admin');
+  };
+
+  const isActivePath = (path: string) => {
+    return location.pathname === path;
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex">
+      {/* Mobile sidebar overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed top-0 left-0 z-50 h-full w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out
+        lg:relative lg:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="p-6 border-b border-border">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">A</span>
+              </div>
+              <span className="font-bold text-foreground">Admin Panel</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsSidebarOpen(false)}
+              className="lg:hidden"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        <nav className="p-4 space-y-2 flex-1">
+          {sidebarItems.map((item) => (
+            <Button
+              key={item.id}
+              variant={isActivePath(item.path) ? "default" : "ghost"}
+              className={`w-full justify-start text-left h-12 ${
+                isActivePath(item.path) 
+                  ? 'bg-primary text-primary-foreground shadow-md' 
+                  : 'hover:bg-accent'
+              }`}
+              onClick={() => handleNavigation(item.path)}
+            >
+              <item.icon className="h-5 w-5 mr-3" />
+              {item.label}
+            </Button>
+          ))}
+        </nav>
+
+        <div className="p-4 border-t border-border">
+          <Button
+            variant="outline"
+            className="w-full justify-start text-left h-12 text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-5 w-5 mr-3" />
+            Chiqish
+          </Button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <div className="flex-1 lg:ml-0">
+        {/* Top bar */}
+        <header className="h-16 bg-card border-b border-border flex items-center justify-between px-4 lg:px-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsSidebarOpen(true)}
+            className="lg:hidden"
+          >
+            <MenuIcon className="h-5 w-5" />
+          </Button>
+          
+          <div className="flex items-center space-x-4">
+            <h1 className="text-xl font-semibold text-foreground">
+              {sidebarItems.find(item => isActivePath(item.path))?.label || 'Admin Panel'}
+            </h1>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="hidden sm:flex"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Chiqish
+            </Button>
+          </div>
+        </header>
+
+        {/* Main content area */}
+        <main className="p-4 lg:p-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
