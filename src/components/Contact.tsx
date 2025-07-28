@@ -46,7 +46,7 @@ const contactTranslations = {
     social: 'Social Media',
     addressText: 'Tashkent city, Yunusabad district, Khalkabad street, house 6',
     phoneText: '+998 97 422 88 88',
-    emailText: 'info@agorarestobar.uz',
+    emailText: 'agorarestobaruz@gmail.com',
     workingText: 'Daily from 10:00 to 03:00',
     followUs: 'Follow us',
     locationTitle: 'Our Location',

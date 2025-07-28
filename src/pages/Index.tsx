@@ -27,7 +27,7 @@ const Index = () => {
   // Scroll spy effect
   useEffect(() => {
     const sections = ['home', 'about', 'menu', 'news', 'contact', 'booking'];
-    
+
     const observerOptions = {
       root: null,
       rootMargin: '-20% 0px -80% 0px',
@@ -61,21 +61,27 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navbar 
+      <Navbar
         activeSection={activeSection}
         language={language}
         setLanguage={setLanguage}
         theme={theme}
         setTheme={setTheme}
       />
-      
+
       <Hero language={language} />
       <About language={language} />
       <Menu language={language} />
       <News language={language} />
       <Contact language={language} />
       <Booking language={language} />
-      <Footer language={language} />
+      <Footer
+        activeSection={activeSection}
+        language={language}
+        setLanguage={setLanguage}
+        theme={theme}
+        setTheme={setTheme}
+      />
     </div>
   );
 };
