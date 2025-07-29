@@ -30,7 +30,7 @@ const demoMenuItems = [
     descriptionEn: 'Traditional Tashkent plov with tender meat and aroma',
     price: 35000,
     image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-    type: 'osh'
+    type: 'salads'
   },
   {
     id: '2',
@@ -42,19 +42,30 @@ const demoMenuItems = [
     descriptionEn: 'Tender beef steak with potato side',
     price: 85000,
     image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-    type: 'steak'
+    type: 'soups'
   }
 ];
 
 const menuTypes = [
-  { value: 'osh', label: 'Osh' },
-  { value: 'steak', label: 'Steak' },
-  { value: 'drinks', label: 'Ichimliklar' },
-  { value: 'hookah', label: 'Kalyan' },
-  { value: 'salads', label: 'Salatlar' },
-  { value: 'soups', label: 'Sho\'rvalar' },
-  { value: 'dessert', label: 'Desert' },
-  { value: 'appetizers', label: 'Mazzalar' }
+  { value: 'salads', label: 'Салаты' },
+  { value: 'soups', label: 'Супы' },
+  { value: 'pasta', label: 'Паста' },
+  { value: 'hotDishes', label: 'Горячие блюдо' },
+  { value: 'grilledDishes', label: 'Блюда на грилье' },
+  { value: 'fishDishes', label: 'Рыбное бдюдо' },
+  { value: 'hotAppetizers', label: 'Горячие закуски' },
+  { value: 'caucasianShashlik', label: 'Кавказские Шашлыки' },
+  { value: 'sideDishes', label: 'Гарниры' },
+  { value: 'sauces', label: 'Соусы' },
+  { value: 'coldAppetizers', label: 'Холодные закуски' },
+  { value: 'tea', label: 'Чаи' },
+  { value: 'freshJuices', label: 'Фрешы' },
+  { value: 'alcoholicCocktails', label: 'Алкогольные коктели' },
+  { value: 'coffee', label: 'Кофе' },
+  { value: 'lemonades', label: 'Лимонады' },
+  { value: 'alcohol', label: 'Алкоголь' },
+  { value: 'drinks', label: 'Напитки' },
+  { value: 'hookah', label: 'Кальян' }
 ];
 
 interface MenuFormData {
@@ -84,18 +95,19 @@ const initialFormData: MenuFormData = {
 export default function AdminMenu() {
   const [menuItems, setMenuItems] = useState(demoMenuItems);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLang, setSelectedLang] = useState<'uz' | 'ru' | 'en'>('uz'); // til tanlash holati
+  const [selectedLang, setSelectedLang] = useState<'uz' | 'ru' | 'en'>('uz');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [formData, setFormData] = useState<MenuFormData>(initialFormData);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const filteredItems = menuItems.filter(item => {
-    const field = `name${selectedLang.charAt(0).toUpperCase()}${selectedLang.slice(1)}`; // nameUz, nameRu, nameEn
+    const field = `name${selectedLang.charAt(0).toUpperCase()}${selectedLang.slice(1)}`;
     return item[field].toLowerCase().includes(searchTerm.toLowerCase());
   });
 
@@ -108,28 +120,95 @@ export default function AdminMenu() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    setFormData(prev => ({
-      ...prev,
-      image: file
-    }));
+    if (file) {
+      // Faqat .png va .jpg formatlarini qabul qilish
+      const validFormats = ['image/png', 'image/jpeg'];
+      if (!validFormats.includes(file.type)) {
+        toast({
+          title: "Xato",
+          description: "Faqat .png yoki .jpg formatdagi rasmlar qabul qilinadi!",
+          variant: "destructive",
+        });
+        return;
+      }
+      setFormData(prev => ({
+        ...prev,
+        image: file
+      }));
+      // Rasmni oldindan ko'rish uchun URL yaratish
+      setPreviewImage(URL.createObjectURL(file));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        image: null
+      }));
+      setPreviewImage(null);
+    }
+  };
+
+  const validateForm = (isEdit: boolean = false) => {
+    if (!formData.nameUz) {
+      toast({
+        title: "Xato",
+        description: "Menyu nomi (O'zbek) majburiy!",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.nameRu) {
+      toast({
+        title: "Xato",
+        description: "Menyu nomi (Русский) majburiy!",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.nameEn) {
+      toast({
+        title: "Xato",
+        description: "Menyu nomi (English) majburiy!",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.price || isNaN(parseFloat(formData.price))) {
+      toast({
+        title: "Xato",
+        description: "Narx majburiy va raqam bo'lishi kerak!",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!formData.type) {
+      toast({
+        title: "Xato",
+        description: "Menyu turi majburiy!",
+        variant: "destructive",
+      });
+      return false;
+    }
+    if (!isEdit && !formData.image) {
+      toast({
+        title: "Xato",
+        description: "Rasm majburiy!",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
   };
 
   const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       // TODO: Replace with actual API call
-      // const formDataToSend = new FormData();
-      // formDataToSend.append('nameUz', formData.nameUz);
-      // ... append other fields
-      // if (formData.image) formDataToSend.append('image', formData.image);
-
-      // const response = await fetch('/api/admin/menu', {
-      //   method: 'POST',
-      //   body: formDataToSend
-      // });
-
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       const newItem = {
@@ -144,6 +223,7 @@ export default function AdminMenu() {
       setMenuItems(prev => [...prev, newItem]);
       setShowAddModal(false);
       setFormData(initialFormData);
+      setPreviewImage(null);
 
       toast({
         title: "Muvaffaqiyatli!",
@@ -163,6 +243,10 @@ export default function AdminMenu() {
   const handleEditItem = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedItem) return;
+
+    if (!validateForm(true)) {
+      return;
+    }
 
     setIsLoading(true);
 
@@ -184,6 +268,7 @@ export default function AdminMenu() {
       setShowEditModal(false);
       setSelectedItem(null);
       setFormData(initialFormData);
+      setPreviewImage(null);
 
       toast({
         title: "Muvaffaqiyatli!",
@@ -241,6 +326,7 @@ export default function AdminMenu() {
       type: item.type,
       image: null
     });
+    setPreviewImage(null); // Tahrirlashda oldindan ko'rishni tozalash
     setShowEditModal(true);
   };
 
@@ -254,6 +340,12 @@ export default function AdminMenu() {
     setShowViewModal(true);
   };
 
+  // Tavsifni qisqartirish funksiyasi
+  const truncateDescription = (text: string, maxLength: number = 50) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + '...';
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -264,9 +356,10 @@ export default function AdminMenu() {
         </div>
         <Button
           onClick={() => {
-            setFormData(initialFormData); // 🔁 formani tozalaydi
-            setSelectedItem(null);        // 🔁 eski tahrirlangan itemni o'chiradi
-            setShowAddModal(true);        // ✅ modalni ochadi
+            setFormData(initialFormData);
+            setSelectedItem(null);
+            setPreviewImage(null);
+            setShowAddModal(true);
           }}
           variant="restaurant"
         >
@@ -277,7 +370,6 @@ export default function AdminMenu() {
 
       {/* Search */}
       <div className="flex items-center gap-4 flex-wrap">
-        {/* Til tanlash */}
         <Select value={selectedLang} onValueChange={(val) => setSelectedLang(val as 'uz' | 'ru' | 'en')}>
           <SelectTrigger className="w-[100px]">
             <SelectValue placeholder="Til" />
@@ -289,7 +381,6 @@ export default function AdminMenu() {
           </SelectContent>
         </Select>
 
-        {/* Qidiruv inputi */}
         <div className="relative flex-grow">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
@@ -312,10 +403,13 @@ export default function AdminMenu() {
               <thead>
                 <tr className="border-b">
                   <th className="text-left py-3 px-2">#</th>
-                  <th className="text-left py-3 px-2">Nomi (Uz)</th>
-                  <th className="text-left py-3 px-2">Nomi (Ru)</th>
-                  <th className="text-left py-3 px-2">Nomi (En)</th>
-                  <th className="text-left py-3 px-2">Narxi</th>
+                  <th className="text-left py-3 px-2">Nomi(Uz)</th>
+                  <th className="text-left py-3 px-2">Nomi(Ru)</th>
+                  <th className="text-left py-3 px-2">Nomi(En)</th>
+                  <th className="text-left py-3 px-2">Tavsif(Uz)</th>
+                  <th className="text-left py-3 px-2">Tavsif(Ru)</th>
+                  <th className="text-left py-3 px-2">Tavsif(En)</th>
+                  <th className="text-left py-3 px-2">Narxi(so'm)</th>
                   <th className="text-left py-3 px-2">Turi</th>
                   <th className="text-left py-3 px-2">Rasm</th>
                   <th className="text-center py-3 px-2">Amallar</th>
@@ -328,7 +422,10 @@ export default function AdminMenu() {
                     <td className="py-3 px-2 font-medium">{item.nameUz}</td>
                     <td className="py-3 px-2">{item.nameRu}</td>
                     <td className="py-3 px-2">{item.nameEn}</td>
-                    <td className="py-3 px-2">{item.price.toLocaleString()} so'm</td>
+                    <td className="py-3 px-2">{truncateDescription(item.descriptionUz)}</td>
+                    <td className="py-3 px-2">{truncateDescription(item.descriptionRu)}</td>
+                    <td className="py-3 px-2">{truncateDescription(item.descriptionEn)}</td>
+                    <td className="py-3 px-2">{item.price.toLocaleString()}</td>
                     <td className="py-3 px-2">
                       <Badge variant="secondary">
                         {menuTypes.find(type => type.value === item.type)?.label}
@@ -390,7 +487,7 @@ export default function AdminMenu() {
           <form onSubmit={handleAddItem} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="nameUz">Nomi(Uz)</Label>
+                <Label htmlFor="nameUz">Nomi (Uz) <span className="text-red-500">*</span></Label>
                 <Input
                   id="nameUz"
                   value={formData.nameUz}
@@ -399,7 +496,7 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="nameRu">Nomi(Ru)</Label>
+                <Label htmlFor="nameRu">Nomi (Ru) <span className="text-red-500">*</span></Label>
                 <Input
                   id="nameRu"
                   value={formData.nameRu}
@@ -408,7 +505,7 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="nameEn">Nomi(En)</Label>
+                <Label htmlFor="nameEn">Nomi (En) <span className="text-red-500">*</span></Label>
                 <Input
                   id="nameEn"
                   value={formData.nameEn}
@@ -420,37 +517,34 @@ export default function AdminMenu() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="descUz">Tavsif (O'zbek)</Label>
+                <Label htmlFor="descUz">Tavsif (Uz)</Label>
                 <Textarea
                   id="descUz"
                   value={formData.descriptionUz}
                   onChange={(e) => handleInputChange('descriptionUz', e.target.value)}
-                  required
                 />
               </div>
               <div>
-                <Label htmlFor="descRu">Tavsif (Русский)</Label>
+                <Label htmlFor="descRu">Tavsif (Ru)</Label>
                 <Textarea
                   id="descRu"
                   value={formData.descriptionRu}
                   onChange={(e) => handleInputChange('descriptionRu', e.target.value)}
-                  required
                 />
               </div>
               <div>
-                <Label htmlFor="descEn">Tavsif (English)</Label>
+                <Label htmlFor="descEn">Tavsif (En)</Label>
                 <Textarea
                   id="descEn"
                   value={formData.descriptionEn}
                   onChange={(e) => handleInputChange('descriptionEn', e.target.value)}
-                  required
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="price">Narxi (so'm)</Label>
+                <Label htmlFor="price">Narxi (so'm) <span className="text-red-500">*</span></Label>
                 <Input
                   id="price"
                   type="number"
@@ -460,8 +554,8 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="type">Turi</Label>
-                <Select value={formData.type} onValueChange={(value) => handleInputChange('type', value)}>
+                <Label htmlFor="type">Turi <span className="text-red-500">*</span></Label>
+                <Select value={formData.type} onValueChange={(value) => handleInputChange('type', value)} required>
                   <SelectTrigger>
                     <SelectValue placeholder="Turini tanlang" />
                   </SelectTrigger>
@@ -477,14 +571,26 @@ export default function AdminMenu() {
             </div>
 
             <div>
-              <Label htmlFor="image">Rasm</Label>
+              <Label htmlFor="image">Rasm <span className="text-red-500">*</span></Label>
               <Input
                 id="image"
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg"
                 onChange={handleImageChange}
+                required
                 className="cursor-pointer"
               />
+              <p className="text-sm text-muted-foreground mt-1">Faqat PNG yoki JPG formatda</p>
+              {previewImage && (
+                <div className="mt-4">
+                  <p className="text-sm text-muted-foreground">Tanlangan rasm:</p>
+                  <img
+                    src={previewImage}
+                    alt="Tanlangan rasm"
+                    className="mt-2 w-32 h-32 object-cover rounded-lg"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex space-x-2 pt-4">
@@ -506,10 +612,9 @@ export default function AdminMenu() {
             <DialogTitle>Menyuni tahrirlash</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleEditItem} className="space-y-4">
-            {/* Same form fields as Add Modal */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="editNameUz">Nomi (O'zbek)</Label>
+                <Label htmlFor="editNameUz">Nomi (O'zbek) <span className="text-red-500">*</span></Label>
                 <Input
                   id="editNameUz"
                   value={formData.nameUz}
@@ -518,7 +623,7 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="editNameRu">Nomi (Русский)</Label>
+                <Label htmlFor="editNameRu">Nomi (Русский) <span className="text-red-500">*</span></Label>
                 <Input
                   id="editNameRu"
                   value={formData.nameRu}
@@ -527,7 +632,7 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="editNameEn">Nomi (English)</Label>
+                <Label htmlFor="editNameEn">Nomi (English) <span className="text-red-500">*</span></Label>
                 <Input
                   id="editNameEn"
                   value={formData.nameEn}
@@ -539,7 +644,7 @@ export default function AdminMenu() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="editPrice">Narxi (so'm)</Label>
+                <Label htmlFor="editPrice">Narxi (so'm) <span className="text-red-500">*</span></Label>
                 <Input
                   id="editPrice"
                   type="number"
@@ -549,8 +654,8 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="editType">Turi</Label>
-                <Select value={formData.type} onValueChange={(value) => handleInputChange('type', value)}>
+                <Label htmlFor="editType">Turi <span className="text-red-500">*</span></Label>
+                <Select value={formData.type} onValueChange={(value) => handleInputChange('type', value)} required>
                   <SelectTrigger>
                     <SelectValue placeholder="Turini tanlang" />
                   </SelectTrigger>
@@ -570,10 +675,30 @@ export default function AdminMenu() {
               <Input
                 id="editImage"
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg"
                 onChange={handleImageChange}
                 className="cursor-pointer"
               />
+              <p className="text-sm text-muted-foreground mt-1">Faqat PNG yoki JPG formatda</p>
+              {previewImage ? (
+                <div className="mt-4">
+                  <p className="text-sm text-muted-foreground">Tanlangan yangi rasm:</p>
+                  <img
+                    src={previewImage}
+                    alt="Tanlangan rasm"
+                    className="mt-2 w-32 h-32 object-cover rounded-lg"
+                  />
+                </div>
+              ) : selectedItem && (
+                <div className="mt-4">
+                  <p className="text-sm text-muted-foreground">Joriy rasm:</p>
+                  <img
+                    src={selectedItem.image}
+                    alt={selectedItem.nameUz}
+                    className="mt-2 w-32 h-32 object-cover rounded-lg"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex space-x-2 pt-4">
