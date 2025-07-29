@@ -204,9 +204,15 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setLanguage('uz')}>O'zbek</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setLanguage('ru')}>Русский</DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setLanguage('en')}>English</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setLanguage('uz')}>
+                        <span className={language === 'uz' ? 'font-bold text-primary' : ''}>O'zbek</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setLanguage('ru')}>
+                        <span className={language === 'ru' ? 'font-bold text-primary' : ''}>Русский</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setLanguage('en')}>
+                        <span className={language === 'en' ? 'font-bold text-primary' : ''}>English</span>
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
