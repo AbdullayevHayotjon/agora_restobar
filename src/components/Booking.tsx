@@ -101,7 +101,8 @@ export function Booking({ language }: BookingProps) {
       toast({
         title: 'Xato',
         description: 'Nimadir xato ketdi. Qaytadan urinib ko‘ring.',
-        variant: 'destructive'
+        variant: 'destructive',
+        duration: 3000,
       });
     } finally {
       setIsLoading(false);

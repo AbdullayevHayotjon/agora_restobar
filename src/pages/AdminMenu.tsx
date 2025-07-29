@@ -151,6 +151,7 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Menyu nomi (O'zbek) majburiy!",
         variant: "destructive",
+        duration: 3000,
       });
       return false;
     }
@@ -159,6 +160,7 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Menyu nomi (Русский) majburiy!",
         variant: "destructive",
+        duration: 3000,
       });
       return false;
     }
@@ -167,6 +169,7 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Menyu nomi (English) majburiy!",
         variant: "destructive",
+        duration: 3000,
       });
       return false;
     }
@@ -175,6 +178,7 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Narx majburiy va raqam bo'lishi kerak!",
         variant: "destructive",
+        duration: 3000,
       });
       return false;
     }
@@ -183,6 +187,7 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Menyu turi majburiy!",
         variant: "destructive",
+        duration: 3000,
       });
       return false;
     }
@@ -191,6 +196,7 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Rasm majburiy!",
         variant: "destructive",
+        duration: 3000,
       });
       return false;
     }
@@ -386,10 +392,10 @@ export default function AdminMenu() {
       {/* Search */}
       <div className="flex items-center gap-4 flex-wrap">
         <Select value={selectedLang} onValueChange={(val) => setSelectedLang(val as 'uz' | 'ru' | 'en')}>
-          <SelectTrigger className="w-[100px]">
+          <SelectTrigger className="w-[80px]">
             <SelectValue placeholder="Til" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="min-w-[var(--radix-select-trigger-width)]">
             <SelectItem value="uz">UZ</SelectItem>
             <SelectItem value="ru">RU</SelectItem>
             <SelectItem value="en">EN</SelectItem>

@@ -42,7 +42,8 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
       toast({
         title: "Xato",
         description: "Barcha maydonlarni to'ldiring",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 3000,
       });
       return;
     }
@@ -58,19 +59,22 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
         toast({
           title: "Muvaffaqiyatli!",
           description: "Admin panelga kirish amalga oshirildi",
+          duration: 3000,
         });
       } else {
         toast({
           title: "Xato",
           description: "Email yoki parol noto'g'ri",
-          variant: "destructive"
+          variant: "destructive",
+          duration: 3000,
         });
       }
     } catch (error) {
       toast({
         title: "Xato",
         description: "Tizimda xatolik yuz berdi",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setIsLoading(false);

@@ -10,6 +10,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminMenu from "./pages/AdminMenu";
 import AdminBanners from "./pages/AdminBanners";
+import AdminBookings from "./pages/adminBookings";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,9 @@ const App = () => {
                 </Route>
                 <Route path="/admin/banners" element={<AdminDashboard onLogout={handleAdminLogout} />}>
                   <Route index element={<AdminBanners />} />
+                </Route>
+                <Route path="/admin/bookings" element={<AdminDashboard onLogout={handleAdminLogout} />}>
+                  <Route index element={<AdminBookings />} />
                 </Route>
                 <Route path="/admin/dashboard" element={<Navigate to="/admin/menu" replace />} />
               </>

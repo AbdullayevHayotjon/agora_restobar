@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ChefHat, Megaphone, LogOut, Menu as MenuIcon, X } from 'lucide-react';
+import { ChefHat, Megaphone, Calendar, LogOut, Menu as MenuIcon, X } from 'lucide-react';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -18,6 +18,12 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       label: 'Menyular',
       icon: ChefHat,
       path: '/admin/menu'
+    },
+    {
+      id: 'bookings',
+      label: 'Bronlar',
+      icon: Calendar,
+      path: '/admin/bookings'
     },
     {
       id: 'banners',

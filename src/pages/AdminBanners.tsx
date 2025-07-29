@@ -87,6 +87,7 @@ export default function AdminBanners() {
         title: "Xato",
         description: "Reklama nomi majburiy!",
         variant: "destructive",
+        duration: 3000,
       });
       return false;
     }
@@ -95,6 +96,7 @@ export default function AdminBanners() {
         title: "Xato",
         description: "Media fayli majburiy!",
         variant: "destructive",
+        duration: 3000,
       });
       return false;
     }
@@ -127,12 +129,14 @@ export default function AdminBanners() {
       toast({
         title: "Muvaffaqiyatli!",
         description: "Yangi reklama qo'shildi",
+        duration: 3000,
       });
     } catch (error) {
       toast({
         title: "Xato",
         description: "Reklama qo'shishda xatolik yuz berdi",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setIsLoading(false);
@@ -171,12 +175,14 @@ export default function AdminBanners() {
       toast({
         title: "Muvaffaqiyatli!",
         description: "Reklama yangilandi",
+        duration: 3000,
       });
     } catch (error) {
       toast({
         title: "Xato",
         description: "Reklama yangilashda xatolik yuz berdi",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setIsLoading(false);
@@ -198,12 +204,14 @@ export default function AdminBanners() {
       toast({
         title: "Muvaffaqiyatli!",
         description: "Reklama o'chirildi",
+        duration: 3000,
       });
     } catch (error) {
       toast({
         title: "Xato",
         description: "Reklama o'chirishda xatolik yuz berdi",
-        variant: "destructive"
+        variant: "destructive",
+        duration: 3000,
       });
     } finally {
       setIsLoading(false);
@@ -214,7 +222,7 @@ export default function AdminBanners() {
     setBanners(prev => prev.map(banner => 
       banner.id === bannerId ? { ...banner, isActive: !banner.isActive } : banner
     ));
-    toast({ title: "Holat o'zgartirildi" });
+    toast({ title: "Holat o'zgartirildi", duration: 3000, });
   };
 
   const openEditModal = (item: any) => {
