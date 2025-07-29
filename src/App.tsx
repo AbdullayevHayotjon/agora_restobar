@@ -10,7 +10,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminMenu from "./pages/AdminMenu";
 import AdminBanners from "./pages/AdminBanners";
-import AdminBookings from "./pages/adminBookings";
+import AdminBookings from "./pages/AdminBooking";
 
 const queryClient = new QueryClient();
 
