@@ -88,7 +88,7 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
             <img
               src={theme === 'light' ? '/logo_black.png' : '/logo_white.png'}
               alt="Agora Restobar logotipi"
-              className="w-[100px] h-[100px] sm:w-[140px] sm:h-[140px] md:w-[160px] md:h-[160px] object-contain"
+              className="w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] md:w-[160px] md:h-[160px] object-contain"
             />
           </div>
 
