@@ -65,7 +65,7 @@ const demoMenuItems = [
     id: '2',
     name: { uz: 'Beef Steak', ru: 'Говяжий стейк', en: 'Beef Steak' },
     description: { uz: 'Yumshoq beef steak, kartoshka garniri bilan', ru: 'Нежный говяжий стейк с картофельным гарниром', en: 'Tender beef steak with potato side' },
-    price: 85000,
+    price: 86000,
     image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
     type: 'soups'
   },
