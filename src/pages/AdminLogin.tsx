@@ -21,8 +21,8 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
   const { toast } = useToast();
 
   // Demo credentials - replace with actual authentication
-  const DEMO_EMAIL = 'admin@agorarestobar.uz';
-  const DEMO_PASSWORD = 'admin123';
+  const DEMO_EMAIL = 'agorarestobaruz@gmail.com';
+  const DEMO_PASSWORD = 'Agora__rest01';
 
   if (isAuthenticated) {
     return <Navigate to="/admin/menu" replace />;
@@ -88,7 +88,7 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
             Admin Panel
           </CardTitle>
           <p className="text-muted-foreground">
-            Agora Restobar Admin Panel
+            AGORA resto&bar Admin Panel
           </p>
         </CardHeader>
         <CardContent>
@@ -101,7 +101,7 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@agorarestobar.uz"
+                placeholder="Emailingizni kiriting..."
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="h-12 text-base focus:ring-primary focus:border-primary"
@@ -117,7 +117,7 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder="Parolingizni kiriting..."
                 value={formData.password}
                 onChange={(e) => handleInputChange('password', e.target.value)}
                 className="h-12 text-base focus:ring-primary focus:border-primary"
@@ -145,15 +145,6 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
               )}
             </Button>
           </form>
-
-          {/* Demo credentials info */}
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg text-sm">
-            <p className="text-muted-foreground text-center">
-              <strong>Demo ma'lumotlar:</strong><br />
-              Email: admin@agorarestobar.uz<br />
-              Parol: admin123
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>
