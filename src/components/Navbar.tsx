@@ -80,7 +80,6 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
         : 'bg-[#0f0f0f]/70'
         }`}
     >
-
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
@@ -88,7 +87,7 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
             <img
               src={theme === 'light' ? '/logo_black.png' : '/logo_white.png'}
               alt="Agora Restobar logotipi"
-              className="w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] md:w-[160px] md:h-[160px] object-contain"
+              className="w-[120px] sm:w-[120px] lg:w-[150px] object-contain"
             />
           </div>
 
@@ -109,57 +108,79 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
             ))}
           </div>
 
-          {/* Controls */}
+          {/* RIGHT SIDE CONTROLS */}
           <div className="flex items-center space-x-2">
-            {/* Language Switcher */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="hidden sm:flex">
-                  <Globe className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setLanguage('uz')}>
-                  <span className={language === 'uz' ? 'font-bold text-primary' : ''}>O'zbek</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage('ru')}>
-                  <span className={language === 'ru' ? 'font-bold text-primary' : ''}>Русский</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage('en')}>
-                  <span className={language === 'en' ? 'font-bold text-primary' : ''}>English</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Desktop: Language + Theme + Booking */}
+            <div className="hidden lg:flex items-center space-x-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Globe className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {['uz', 'ru', 'en'].map((lang) => (
+                    <DropdownMenuItem key={lang} onClick={() => setLanguage(lang as Language)}>
+                      <span className={language === lang ? 'font-bold text-primary' : ''}>
+                        {lang === 'uz' ? "O'zbek" : lang === 'ru' ? 'Русский' : 'English'}
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-            {/* Theme Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              className="hidden sm:flex"
-            >
-              {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              >
+                {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </Button>
 
-            {/* Booking Button */}
-            <Button
-              variant="restaurant"
-              size="sm"
-              onClick={() => scrollToSection('booking')}
-              className="hidden sm:flex"
-            >
-              {translations[language].booking}
-            </Button>
+              <Button
+                variant="restaurant"
+                size="sm"
+                onClick={() => scrollToSection('booking')}
+              >
+                {translations[language].booking}
+              </Button>
+            </div>
 
-            {/* Mobile Menu Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden"
-            >
-              {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </Button>
+            {/* Mobile: Language + Theme + Hamburger */}
+            <div className="flex lg:hidden items-center space-x-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Globe className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {['uz', 'ru', 'en'].map((lang) => (
+                    <DropdownMenuItem key={lang} onClick={() => setLanguage(lang as Language)}>
+                      <span className={language === lang ? 'font-bold text-primary' : ''}>
+                        {lang === 'uz' ? "O'zbek" : lang === 'ru' ? 'Русский' : 'English'}
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              >
+                {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -188,34 +209,6 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
                 >
                   {translations[language].booking}
                 </Button>
-                <div className="flex space-x-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                    className="flex-1"
-                  >
-                    {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="flex-1">
-                        <Globe className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setLanguage('uz')}>
-                        <span className={language === 'uz' ? 'font-bold text-primary' : ''}>O'zbek</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setLanguage('ru')}>
-                        <span className={language === 'ru' ? 'font-bold text-primary' : ''}>Русский</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setLanguage('en')}>
-                        <span className={language === 'en' ? 'font-bold text-primary' : ''}>English</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
               </div>
             </div>
           </div>
