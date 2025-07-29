@@ -47,7 +47,7 @@ export function Hero({ language }: HeroProps) {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-fixed opacity-100 z-0"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')"
+          backgroundImage: "url('/orqa_fon.png')"
         }}
       ></div>
 
