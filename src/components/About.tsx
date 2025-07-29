@@ -8,6 +8,8 @@ const aboutTranslations = {
     title: 'Biz haqimizda',
     subtitle: 'Agora Restobar - bu zamonaviy ko\'ngilochar maskan',
     description: 'Bizning restobar har qanday ta\'m va xohishlar uchun mo\'ljallangan. Oilaviy yig\'ilishlardan tortib do\'stlar bilan ko\'ngilochar kechgacha - bizda hamma uchun joy bor.',
+    atmosphereTitle: 'Zamonaviy atmosfera',
+    atmosphereDescription: 'Bizning restoranda o\'zingizni uyingizda his eting',
     features: {
       bar: {
         title: 'Bar',
@@ -39,6 +41,8 @@ const aboutTranslations = {
     title: 'О нас',
     subtitle: 'Agora Restobar - это современное развлекательное заведение',
     description: 'Наш ресторан предназначен для любых вкусов и желаний. От семейных встреч до развлекательных вечеров с друзьями - у нас есть место для всех.',
+    atmosphereTitle: 'Современная атмосфера',
+    atmosphereDescription: 'Чувствуйте себя как дома в нашем ресторане',
     features: {
       bar: {
         title: 'Бар',
@@ -70,6 +74,8 @@ const aboutTranslations = {
     title: 'About Us',
     subtitle: 'Agora Restobar - a modern entertainment venue',
     description: 'Our restaurant is designed for any taste and desire. From family gatherings to entertaining evenings with friends - we have a place for everyone.',
+    atmosphereTitle: 'Modern Atmosphere',
+    atmosphereDescription: 'Feel at home in our restaurant',
     features: {
       bar: {
         title: 'Bar',
@@ -162,8 +168,8 @@ export function About({ language }: AboutProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card 
-              key={index} 
+            <Card
+              key={index}
               className="group hover:shadow-elegant transition-all duration-300 hover:-translate-y-2 border-0 bg-card/50 backdrop-blur-sm"
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -192,8 +198,8 @@ export function About({ language }: AboutProps) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             <div className="absolute bottom-8 left-8 text-white">
-              <h3 className="text-2xl font-bold mb-2">Zamonaviy atmosfera</h3>
-              <p className="text-white/90">Bizning restoranda o'zingizni uyingizda his eting</p>
+              <h3 className="text-2xl font-bold mb-2">{t.atmosphereTitle}</h3>
+              <p className="text-white/90">{t.atmosphereDescription}</p>
             </div>
           </div>
         </div>
