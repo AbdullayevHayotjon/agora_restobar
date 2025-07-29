@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -104,6 +104,7 @@ export default function AdminMenu() {
   const [formData, setFormData] = useState<MenuFormData>(initialFormData);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFormChanged, setIsFormChanged] = useState(false);
   const { toast } = useToast();
 
   const filteredItems = menuItems.filter(item => {
@@ -121,7 +122,6 @@ export default function AdminMenu() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     if (file) {
-      // Faqat .png va .jpg formatlarini qabul qilish
       const validFormats = ['image/png', 'image/jpeg'];
       if (!validFormats.includes(file.type)) {
         toast({
@@ -135,7 +135,6 @@ export default function AdminMenu() {
         ...prev,
         image: file
       }));
-      // Rasmni oldindan ko'rish uchun URL yaratish
       setPreviewImage(URL.createObjectURL(file));
     } else {
       setFormData(prev => ({
@@ -208,7 +207,6 @@ export default function AdminMenu() {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       const newItem = {
@@ -251,7 +249,6 @@ export default function AdminMenu() {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       const updatedItem = {
@@ -269,6 +266,7 @@ export default function AdminMenu() {
       setSelectedItem(null);
       setFormData(initialFormData);
       setPreviewImage(null);
+      setIsFormChanged(false);
 
       toast({
         title: "Muvaffaqiyatli!",
@@ -291,7 +289,6 @@ export default function AdminMenu() {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       setMenuItems(prev => prev.filter(item => item.id !== selectedItem.id));
@@ -326,8 +323,9 @@ export default function AdminMenu() {
       type: item.type,
       image: null
     });
-    setPreviewImage(null); // Tahrirlashda oldindan ko'rishni tozalash
+    setPreviewImage(null);
     setShowEditModal(true);
+    setIsFormChanged(false);
   };
 
   const openDeleteModal = (item: any) => {
@@ -345,6 +343,23 @@ export default function AdminMenu() {
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + '...';
   };
+
+  // Formadagi o'zgarishlarni kuzatish
+  useEffect(() => {
+    if (selectedItem) {
+      const hasChanges =
+        formData.nameUz !== selectedItem.nameUz ||
+        formData.nameRu !== selectedItem.nameRu ||
+        formData.nameEn !== selectedItem.nameEn ||
+        formData.descriptionUz !== selectedItem.descriptionUz ||
+        formData.descriptionRu !== selectedItem.descriptionRu ||
+        formData.descriptionEn !== selectedItem.descriptionEn ||
+        formData.price !== selectedItem.price.toString() ||
+        formData.type !== selectedItem.type ||
+        formData.image !== null;
+      setIsFormChanged(hasChanges);
+    }
+  }, [formData, selectedItem]);
 
   return (
     <div className="space-y-6">
@@ -607,14 +622,14 @@ export default function AdminMenu() {
 
       {/* Edit Modal */}
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Menyuni tahrirlash</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleEditItem} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="editNameUz">Nomi (O'zbek) <span className="text-red-500">*</span></Label>
+                <Label htmlFor="editNameUz">Nomi (Uz) <span className="text-red-500">*</span></Label>
                 <Input
                   id="editNameUz"
                   value={formData.nameUz}
@@ -623,7 +638,7 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="editNameRu">Nomi (Русский) <span className="text-red-500">*</span></Label>
+                <Label htmlFor="editNameRu">Nomi (Ru) <span className="text-red-500">*</span></Label>
                 <Input
                   id="editNameRu"
                   value={formData.nameRu}
@@ -632,12 +647,39 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="editNameEn">Nomi (English) <span className="text-red-500">*</span></Label>
+                <Label htmlFor="editNameEn">Nomi (En) <span className="text-red-500">*</span></Label>
                 <Input
                   id="editNameEn"
                   value={formData.nameEn}
                   onChange={(e) => handleInputChange('nameEn', e.target.value)}
                   required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="editDescUz">Tavsif (Uz)</Label>
+                <Textarea
+                  id="editDescUz"
+                  value={formData.descriptionUz}
+                  onChange={(e) => handleInputChange('descriptionUz', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDescRu">Tavsif (Ru)</Label>
+                <Textarea
+                  id="editDescRu"
+                  value={formData.descriptionRu}
+                  onChange={(e) => handleInputChange('descriptionRu', e.target.value)}
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDescEn">Tavsif (En)</Label>
+                <Textarea
+                  id="editDescEn"
+                  value={formData.descriptionEn}
+                  onChange={(e) => handleInputChange('descriptionEn', e.target.value)}
                 />
               </div>
             </div>
@@ -702,7 +744,7 @@ export default function AdminMenu() {
             </div>
 
             <div className="flex space-x-2 pt-4">
-              <Button type="submit" disabled={isLoading} className="flex-1">
+              <Button type="submit" disabled={isLoading || !isFormChanged} className="flex-1">
                 {isLoading ? 'Yangilanmoqda...' : 'Yangilash'}
               </Button>
               <Button type="button" variant="outline" onClick={() => setShowEditModal(false)}>
