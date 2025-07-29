@@ -7,11 +7,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Search, 
-  Plus, 
-  Edit, 
-  Trash2, 
+import {
+  Search,
+  Plus,
+  Edit,
+  Trash2,
   Upload,
   Eye,
   X
@@ -84,6 +84,7 @@ const initialFormData: MenuFormData = {
 export default function AdminMenu() {
   const [menuItems, setMenuItems] = useState(demoMenuItems);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedLang, setSelectedLang] = useState<'uz' | 'ru' | 'en'>('uz'); // til tanlash holati
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -93,11 +94,10 @@ export default function AdminMenu() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const filteredItems = menuItems.filter(item => 
-    item.nameUz.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.nameRu.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.nameEn.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = menuItems.filter(item => {
+    const field = `name${selectedLang.charAt(0).toUpperCase()}${selectedLang.slice(1)}`; // nameUz, nameRu, nameEn
+    return item[field].toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const handleInputChange = (field: keyof MenuFormData, value: string) => {
     setFormData(prev => ({
@@ -124,7 +124,7 @@ export default function AdminMenu() {
       // formDataToSend.append('nameUz', formData.nameUz);
       // ... append other fields
       // if (formData.image) formDataToSend.append('image', formData.image);
-      
+
       // const response = await fetch('/api/admin/menu', {
       //   method: 'POST',
       //   body: formDataToSend
@@ -136,13 +136,15 @@ export default function AdminMenu() {
         id: Date.now().toString(),
         ...formData,
         price: parseFloat(formData.price),
-        image: formData.image ? URL.createObjectURL(formData.image) : 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        image: formData.image
+          ? URL.createObjectURL(formData.image)
+          : 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
       };
 
       setMenuItems(prev => [...prev, newItem]);
       setShowAddModal(false);
       setFormData(initialFormData);
-      
+
       toast({
         title: "Muvaffaqiyatli!",
         description: "Yangi menyu qo'shildi",
@@ -175,14 +177,14 @@ export default function AdminMenu() {
         image: formData.image ? URL.createObjectURL(formData.image) : selectedItem.image
       };
 
-      setMenuItems(prev => prev.map(item => 
+      setMenuItems(prev => prev.map(item =>
         item.id === selectedItem.id ? updatedItem : item
       ));
-      
+
       setShowEditModal(false);
       setSelectedItem(null);
       setFormData(initialFormData);
-      
+
       toast({
         title: "Muvaffaqiyatli!",
         description: "Menyu yangilandi",
@@ -210,7 +212,7 @@ export default function AdminMenu() {
       setMenuItems(prev => prev.filter(item => item.id !== selectedItem.id));
       setShowDeleteModal(false);
       setSelectedItem(null);
-      
+
       toast({
         title: "Muvaffaqiyatli!",
         description: "Menyu o'chirildi",
@@ -255,31 +257,49 @@ export default function AdminMenu() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-row flex-wrap justify-between items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Menyular boshqaruvi</h1>
           <p className="text-muted-foreground">Restoran menyularini boshqaring</p>
         </div>
-        <Button onClick={() => setShowAddModal(true)} variant="restaurant">
+        <Button
+          onClick={() => {
+            setFormData(initialFormData); // 🔁 formani tozalaydi
+            setSelectedItem(null);        // 🔁 eski tahrirlangan itemni o'chiradi
+            setShowAddModal(true);        // ✅ modalni ochadi
+          }}
+          variant="restaurant"
+        >
           <Plus className="h-4 w-4 mr-2" />
           Yangi menyu qo'shish
         </Button>
       </div>
 
       {/* Search */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Menyu nomi bo'yicha qidirish..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center gap-4 flex-wrap">
+        {/* Til tanlash */}
+        <Select value={selectedLang} onValueChange={(val) => setSelectedLang(val as 'uz' | 'ru' | 'en')}>
+          <SelectTrigger className="w-[100px]">
+            <SelectValue placeholder="Til" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="uz">UZ</SelectItem>
+            <SelectItem value="ru">RU</SelectItem>
+            <SelectItem value="en">EN</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Qidiruv inputi */}
+        <div className="relative flex-grow">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder={`Menyu nomi (${selectedLang.toUpperCase()}) bo‘yicha qidirish...`}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+      </div>
 
       {/* Menu Items Table */}
       <Card>
@@ -315,8 +335,8 @@ export default function AdminMenu() {
                       </Badge>
                     </td>
                     <td className="py-3 px-2">
-                      <img 
-                        src={item.image} 
+                      <img
+                        src={item.image}
                         alt={item.nameUz}
                         className="w-12 h-12 object-cover rounded-lg"
                       />
@@ -351,7 +371,7 @@ export default function AdminMenu() {
                 ))}
               </tbody>
             </table>
-            
+
             {filteredItems.length === 0 && (
               <div className="text-center py-8">
                 <p className="text-muted-foreground">Hech qanday menyu topilmadi</p>
@@ -363,14 +383,14 @@ export default function AdminMenu() {
 
       {/* Add Modal */}
       <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Yangi menyu qo'shish</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleAddItem} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="nameUz">Nomi (O'zbek)</Label>
+                <Label htmlFor="nameUz">Nomi(Uz)</Label>
                 <Input
                   id="nameUz"
                   value={formData.nameUz}
@@ -379,7 +399,7 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="nameRu">Nomi (Русский)</Label>
+                <Label htmlFor="nameRu">Nomi(Ru)</Label>
                 <Input
                   id="nameRu"
                   value={formData.nameRu}
@@ -388,7 +408,7 @@ export default function AdminMenu() {
                 />
               </div>
               <div>
-                <Label htmlFor="nameEn">Nomi (English)</Label>
+                <Label htmlFor="nameEn">Nomi(En)</Label>
                 <Input
                   id="nameEn"
                   value={formData.nameEn}
@@ -398,7 +418,7 @@ export default function AdminMenu() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="descUz">Tavsif (O'zbek)</Label>
                 <Textarea
@@ -577,8 +597,8 @@ export default function AdminMenu() {
           {selectedItem && (
             <div className="space-y-4">
               <div className="flex items-center space-x-4 p-4 bg-muted/50 rounded-lg">
-                <img 
-                  src={selectedItem.image} 
+                <img
+                  src={selectedItem.image}
                   alt={selectedItem.nameUz}
                   className="w-16 h-16 object-cover rounded-lg"
                 />
@@ -591,8 +611,8 @@ export default function AdminMenu() {
                 Haqiqatan ham bu menyuni o'chirmoqchimisiz?
               </p>
               <div className="flex space-x-2">
-                <Button 
-                  variant="destructive" 
+                <Button
+                  variant="destructive"
                   onClick={handleDeleteItem}
                   disabled={isLoading}
                   className="flex-1"
