@@ -76,8 +76,8 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-all duration-300 ${theme === 'light'
-          ? 'bg-white/70'
-          : 'bg-[#0f0f0f]/70'
+        ? 'bg-white/70'
+        : 'bg-[#0f0f0f]/70'
         }`}
     >
 
@@ -88,7 +88,7 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
             <img
               src={theme === 'light' ? '/logo_black.png' : '/logo_white.png'}
               alt="Agora Restobar logotipi"
-              className="w-[160px] h-[160px] object-contain"
+              className="w-[100px] h-[100px] sm:w-[140px] sm:h-[140px] md:w-[160px] md:h-[160px] object-contain"
             />
           </div>
 
