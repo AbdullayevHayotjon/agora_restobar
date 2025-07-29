@@ -60,25 +60,23 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 z-50 h-full w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out
+          fixed top-0 left-0 z-50 h-full w-48 bg-card border-r border-border transform transition-transform duration-300 ease-in-out
           flex flex-col
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           lg:relative lg:translate-x-0 lg:h-screen
         `}
       >
-        <div className="p-6 border-b border-border">
+        <div className="pl-8 pr-4 py-4 border-b border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <span className="font-bold text-foreground">Admin Panel</span>
+              {/* Logotip rasmi */}
+              <img
+                src="/logo_black.png" // ← bu yerga logotip faylingizning yo‘lini yozing
+                alt="Logotip"
+                className="w-[120px] sm:w-[120px] lg:w-[120px] object-contain" // ← kerak bo‘lsa o‘lchamni moslang
+              />
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            
           </div>
         </div>
 
@@ -87,11 +85,10 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
             <Button
               key={item.id}
               variant={isActivePath(item.path) ? "default" : "ghost"}
-              className={`w-full justify-start text-left h-12 ${
-                isActivePath(item.path)
+              className={`w-full justify-start text-left h-12 ${isActivePath(item.path)
                   ? 'bg-primary text-primary-foreground shadow-md'
                   : 'hover:bg-accent'
-              }`}
+                }`}
               onClick={() => handleNavigation(item.path)}
             >
               <item.icon className="h-5 w-5 mr-3" />

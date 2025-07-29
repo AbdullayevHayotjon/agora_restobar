@@ -59,14 +59,12 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
         toast({
           title: "Muvaffaqiyatli!",
           description: "Admin panelga kirish amalga oshirildi",
-          duration: 3000,
         });
       } else {
         toast({
           title: "Xato",
           description: "Email yoki parol noto'g'ri",
           variant: "destructive",
-          duration: 3000,
         });
       }
     } catch (error) {
@@ -74,7 +72,6 @@ export default function AdminLogin({ isAuthenticated, onLogin }: AdminLoginProps
         title: "Xato",
         description: "Tizimda xatolik yuz berdi",
         variant: "destructive",
-        duration: 3000,
       });
     } finally {
       setIsLoading(false);

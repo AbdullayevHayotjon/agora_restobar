@@ -151,7 +151,6 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Menyu nomi (O'zbek) majburiy!",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     }
@@ -160,7 +159,6 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Menyu nomi (Русский) majburiy!",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     }
@@ -169,7 +167,6 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Menyu nomi (English) majburiy!",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     }
@@ -178,7 +175,6 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Narx majburiy va raqam bo'lishi kerak!",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     }
@@ -187,7 +183,6 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Menyu turi majburiy!",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     }
@@ -196,7 +191,6 @@ export default function AdminMenu() {
         title: "Xato",
         description: "Rasm majburiy!",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     }

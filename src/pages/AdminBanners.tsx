@@ -7,19 +7,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, Eye, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-// Demo data - to be replaced with API data
-const demoBanners = [
-  {
-    id: '1',
-    name: 'Yangi menyu aksiyasi',
-    description: 'Bizning yangi menyu taqdim etilmoqda!',
-    media: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-    isActive: true
-  }
-];
+// Banner interfeysi yangilandi
+interface Banner {
+  id: string;
+  name: string;
+  description: string;
+  mediaFile: File | null; // Faylni saqlash uchun
+  mediaUrl: string; // Ko'rsatish uchun URL
+  isActive: boolean;
+}
 
 interface BannerFormData {
   name: string;
@@ -35,18 +34,38 @@ const initialFormData: BannerFormData = {
   isActive: true
 };
 
+// Demo data - yangilandi
+const demoBanners: Banner[] = [
+  {
+    id: '1',
+    name: 'Yangi menyu aksiyasi',
+    description: 'Bizning yangi menyu taqdim etilmoqda!',
+    mediaFile: null,
+    mediaUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+    isActive: true
+  }
+];
+
 export default function AdminBanners() {
-  const [banners, setBanners] = useState(demoBanners);
+  const [banners, setBanners] = useState<Banner[]>(demoBanners);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<Banner | null>(null);
   const [formData, setFormData] = useState<BannerFormData>(initialFormData);
   const [previewMedia, setPreviewMedia] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFormChanged, setIsFormChanged] = useState(false);
   const { toast } = useToast();
+
+  // Video fayl ekanligini aniqlash
+  const isVideo = (url: string | null, file: File | null = null) => {
+    if (file) {
+      return file.type.startsWith('video/');
+    }
+    return url?.endsWith('.mp4') || false;
+  };
 
   const handleInputChange = (field: keyof BannerFormData, value: string | boolean) => {
     setFormData(prev => ({
@@ -71,7 +90,8 @@ export default function AdminBanners() {
         ...prev,
         media: file
       }));
-      setPreviewMedia(URL.createObjectURL(file));
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewMedia(previewUrl);
     } else {
       setFormData(prev => ({
         ...prev,
@@ -87,7 +107,6 @@ export default function AdminBanners() {
         title: "Xato",
         description: "Reklama nomi majburiy!",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     }
@@ -96,7 +115,6 @@ export default function AdminBanners() {
         title: "Xato",
         description: "Media fayli majburiy!",
         variant: "destructive",
-        duration: 3000,
       });
       return false;
     }
@@ -115,10 +133,13 @@ export default function AdminBanners() {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const newItem = {
+      const newItem: Banner = {
         id: Date.now().toString(),
-        ...formData,
-        media: formData.media ? URL.createObjectURL(formData.media) : demoBanners[0].media
+        name: formData.name,
+        description: formData.description,
+        mediaFile: formData.media,
+        mediaUrl: formData.media ? URL.createObjectURL(formData.media) : demoBanners[0].mediaUrl,
+        isActive: formData.isActive
       };
 
       setBanners(prev => [...prev, newItem]);
@@ -129,14 +150,12 @@ export default function AdminBanners() {
       toast({
         title: "Muvaffaqiyatli!",
         description: "Yangi reklama qo'shildi",
-        duration: 3000,
       });
     } catch (error) {
       toast({
         title: "Xato",
         description: "Reklama qo'shishda xatolik yuz berdi",
         variant: "destructive",
-        duration: 3000,
       });
     } finally {
       setIsLoading(false);
@@ -156,10 +175,13 @@ export default function AdminBanners() {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const updatedItem = {
+      const updatedItem: Banner = {
         ...selectedItem,
-        ...formData,
-        media: formData.media ? URL.createObjectURL(formData.media) : selectedItem.media
+        name: formData.name,
+        description: formData.description,
+        mediaFile: formData.media || selectedItem.mediaFile,
+        mediaUrl: formData.media ? URL.createObjectURL(formData.media) : selectedItem.mediaUrl,
+        isActive: formData.isActive
       };
 
       setBanners(prev => prev.map(item =>
@@ -175,14 +197,12 @@ export default function AdminBanners() {
       toast({
         title: "Muvaffaqiyatli!",
         description: "Reklama yangilandi",
-        duration: 3000,
       });
     } catch (error) {
       toast({
         title: "Xato",
         description: "Reklama yangilashda xatolik yuz berdi",
         variant: "destructive",
-        duration: 3000,
       });
     } finally {
       setIsLoading(false);
@@ -204,14 +224,12 @@ export default function AdminBanners() {
       toast({
         title: "Muvaffaqiyatli!",
         description: "Reklama o'chirildi",
-        duration: 3000,
       });
     } catch (error) {
       toast({
         title: "Xato",
         description: "Reklama o'chirishda xatolik yuz berdi",
         variant: "destructive",
-        duration: 3000,
       });
     } finally {
       setIsLoading(false);
@@ -222,10 +240,10 @@ export default function AdminBanners() {
     setBanners(prev => prev.map(banner => 
       banner.id === bannerId ? { ...banner, isActive: !banner.isActive } : banner
     ));
-    toast({ title: "Holat o'zgartirildi", duration: 3000, });
+    toast({ title: "Holat o'zgartirildi", duration: 3000 });
   };
 
-  const openEditModal = (item: any) => {
+  const openEditModal = (item: Banner) => {
     setSelectedItem(item);
     setFormData({
       name: item.name,
@@ -238,12 +256,12 @@ export default function AdminBanners() {
     setIsFormChanged(false);
   };
 
-  const openDeleteModal = (item: any) => {
+  const openDeleteModal = (item: Banner) => {
     setSelectedItem(item);
     setShowDeleteModal(true);
   };
 
-  const openViewModal = (item: any) => {
+  const openViewModal = (item: Banner) => {
     setSelectedItem(item);
     setShowViewModal(true);
   };
@@ -269,12 +287,11 @@ export default function AdminBanners() {
   // Xotirani tozalash
   useEffect(() => {
     return () => {
-      if (previewMedia) URL.revokeObjectURL(previewMedia);
+      if (previewMedia) {
+        URL.revokeObjectURL(previewMedia);
+      }
     };
   }, [previewMedia]);
-
-  // Media fayl turini aniqlash
-  const isVideo = (url: string) => url.endsWith('.mp4');
 
   return (
     <div className="space-y-6">
@@ -313,15 +330,16 @@ export default function AdminBanners() {
                     <td className="py-3 px-2 font-medium">{banner.name}</td>
                     <td className="py-3 px-2">{banner.description}</td>
                     <td className="py-3 px-2">
-                      {isVideo(banner.media) ? (
+                      {isVideo(banner.mediaUrl, banner.mediaFile) ? (
                         <video
-                          src={banner.media}
-                          className="w-12 h-12 object-cover rounded"
+                          src={banner.mediaFile ? URL.createObjectURL(banner.mediaFile) : banner.mediaUrl}
+                          className="w-12 h-12 rounded"
                           controls
+                          autoPlay={false}
                         />
                       ) : (
                         <img
-                          src={banner.media}
+                          src={banner.mediaFile ? URL.createObjectURL(banner.mediaFile) : banner.mediaUrl}
                           alt={banner.name}
                           className="w-12 h-12 object-cover rounded"
                         />
@@ -420,11 +438,12 @@ export default function AdminBanners() {
                 {previewMedia && (
                   <div className="mt-4">
                     <p className="text-sm text-muted-foreground">Tanlangan media:</p>
-                    {isVideo(previewMedia) ? (
+                    {isVideo(previewMedia, formData.media) ? (
                       <video
                         src={previewMedia}
-                        className="mt-2 w-32 h-32 object-cover rounded-lg"
+                        className="mt-2 w-32 h-32 rounded-lg"
                         controls
+                        autoPlay={false}
                       />
                     ) : (
                       <img
@@ -451,7 +470,7 @@ export default function AdminBanners() {
 
             <div className="flex space-x-2 pt-4">
               <Button type="submit" disabled={isLoading} className="flex-1">
-                {isLoading ? 'Qo\'sh uppshishilmoqda...' : 'Qo\'shish'}
+                {isLoading ? "Qoʻshilmoqda..." : "Qoʻshish"}
               </Button>
               <Button type="button" variant="outline" onClick={() => setShowAddModal(false)}>
                 Bekor qilish
@@ -502,11 +521,12 @@ export default function AdminBanners() {
                 {previewMedia ? (
                   <div className="mt-4">
                     <p className="text-sm text-muted-foreground">Tanlangan yangi media:</p>
-                    {isVideo(previewMedia) ? (
+                    {isVideo(previewMedia, formData.media) ? (
                       <video
                         src={previewMedia}
-                        className="mt-2 w-32 h-32 object-cover rounded-lg"
+                        className="mt-2 w-32 h-32 rounded-lg"
                         controls
+                        autoPlay={false}
                       />
                     ) : (
                       <img
@@ -519,15 +539,16 @@ export default function AdminBanners() {
                 ) : selectedItem && (
                   <div className="mt-4">
                     <p className="text-sm text-muted-foreground">Joriy media:</p>
-                    {isVideo(selectedItem.media) ? (
+                    {isVideo(selectedItem.mediaUrl, selectedItem.mediaFile) ? (
                       <video
-                        src={selectedItem.media}
-                        className="mt-2 w-32 h-32 object-cover rounded-lg"
+                        src={selectedItem.mediaFile ? URL.createObjectURL(selectedItem.mediaFile) : selectedItem.mediaUrl}
+                        className="mt-2 w-32 h-32 rounded-lg"
                         controls
+                        autoPlay={false}
                       />
                     ) : (
                       <img
-                        src={selectedItem.media}
+                        src={selectedItem.mediaFile ? URL.createObjectURL(selectedItem.mediaFile) : selectedItem.mediaUrl}
                         alt={selectedItem.name}
                         className="mt-2 w-32 h-32 object-cover rounded-lg"
                       />
@@ -550,7 +571,7 @@ export default function AdminBanners() {
 
             <div className="flex space-x-2 pt-4">
               <Button type="submit" disabled={isLoading || !isFormChanged} className="flex-1">
-                {isLoading ? 'Yangilanmoqda...' : 'Yangilash'}
+                {isLoading ? "Yangilanmoqda..." : "Yangilash"}
               </Button>
               <Button type="button" variant="outline" onClick={() => setShowEditModal(false)}>
                 Bekor qilish
@@ -569,15 +590,16 @@ export default function AdminBanners() {
           {selectedItem && (
             <div className="space-y-4">
               <div className="flex items-center space-x-4 p-4 bg-muted/50 rounded-lg">
-                {isVideo(selectedItem.media) ? (
+                {isVideo(selectedItem.mediaUrl, selectedItem.mediaFile) ? (
                   <video
-                    src={selectedItem.media}
-                    className="w-16 h-16 object-cover rounded-lg"
+                    src={selectedItem.mediaFile ? URL.createObjectURL(selectedItem.mediaFile) : selectedItem.mediaUrl}
+                    className="w-16 h-16 rounded-lg"
                     controls
+                    autoPlay={false}
                   />
                 ) : (
                   <img
-                    src={selectedItem.media}
+                    src={selectedItem.mediaFile ? URL.createObjectURL(selectedItem.mediaFile) : selectedItem.mediaUrl}
                     alt={selectedItem.name}
                     className="w-16 h-16 object-cover rounded-lg"
                   />
@@ -597,7 +619,7 @@ export default function AdminBanners() {
                   disabled={isLoading}
                   className="flex-1"
                 >
-                  {isLoading ? 'O\'chirilmoqda...' : 'O\'chirish'}
+                  {isLoading ? "Oʻchirilmoqda..." : "Oʻchirish"}
                 </Button>
                 <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
                   Bekor qilish
@@ -617,15 +639,16 @@ export default function AdminBanners() {
           {selectedItem && (
             <div className="space-y-6">
               <div className="relative h-64 rounded-lg overflow-hidden">
-                {isVideo(selectedItem.media) ? (
+                {isVideo(selectedItem.mediaUrl, selectedItem.mediaFile) ? (
                   <video
-                    src={selectedItem.media}
-                    className="w-full h-full object-cover"
+                    src={selectedItem.mediaFile ? URL.createObjectURL(selectedItem.mediaFile) : selectedItem.mediaUrl}
+                    className="w-full h-full rounded-lg"
                     controls
+                    autoPlay={false}
                   />
                 ) : (
                   <img
-                    src={selectedItem.media}
+                    src={selectedItem.mediaFile ? URL.createObjectURL(selectedItem.mediaFile) : selectedItem.mediaUrl}
                     alt={selectedItem.name}
                     className="w-full h-full object-cover"
                   />
