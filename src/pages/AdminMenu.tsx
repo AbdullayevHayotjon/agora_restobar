@@ -17,34 +17,7 @@ import {
   X
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-// Demo data - to be replaced with API data
-const demoMenuItems = [
-  {
-    id: '1',
-    nameUz: 'Toshkent oshi',
-    nameRu: 'Ташкентский плов',
-    nameEn: 'Tashkent Plov',
-    descriptionUz: 'An\'anaviy toshkent oshi, yumshoq go\'sht va aromat bilan',
-    descriptionRu: 'Традиционный ташкентский плов с мягким мясом и ароматом',
-    descriptionEn: 'Traditional Tashkent plov with tender meat and aroma',
-    price: 35000,
-    image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-    type: 'salads'
-  },
-  {
-    id: '2',
-    nameUz: 'Beef Steak',
-    nameRu: 'Говяжий стейк',
-    nameEn: 'Beef Steak',
-    descriptionUz: 'Yumshoq beef steak, kartoshka garniri bilan',
-    descriptionRu: 'Нежный говяжий стейк с картофельным гарниром',
-    descriptionEn: 'Tender beef steak with potato side',
-    price: 85000,
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-    type: 'soups'
-  }
-];
+import { API_BASE_URL } from '@/lib/constants';
 
 const menuTypes = [
   { value: 'salads', label: 'Салаты' },
@@ -67,6 +40,19 @@ const menuTypes = [
   { value: 'drinks', label: 'Напитки' },
   { value: 'hookah', label: 'Кальян' }
 ];
+
+interface MenuItem {
+  id: string;
+  nameUz: string;
+  nameRu: string;
+  nameEn: string;
+  descriptionUz: string;
+  descriptionRu: string;
+  descriptionEn: string;
+  price: number;
+  image: string;
+  type: string;
+}
 
 interface MenuFormData {
   nameUz: string;
@@ -93,22 +79,62 @@ const initialFormData: MenuFormData = {
 };
 
 export default function AdminMenu() {
-  const [menuItems, setMenuItems] = useState(demoMenuItems);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLang, setSelectedLang] = useState<'uz' | 'ru' | 'en'>('uz');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [formData, setFormData] = useState<MenuFormData>(initialFormData);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isFormChanged, setIsFormChanged] = useState(false);
   const { toast } = useToast();
 
+  // API'dan ma'lumotlarni olish funksiyasi
+  const fetchMenuItems = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/Menu`);
+      if (response.ok) {
+        const data = await response.json();
+        const mappedItems: MenuItem[] = (data.$values || []).map(item => ({
+          id: item.id,
+          nameUz: item.nameUz || '',
+          nameRu: item.nameRu || '',
+          nameEn: item.nameEn || '',
+          descriptionUz: item.descriptionUz || '',
+          descriptionRu: item.descriptionRu || '',
+          descriptionEn: item.descriptionEn || '',
+          price: item.price || 0,
+          image: `${API_BASE_URL}${item.imageUrl}`,
+          type: item.category || ''
+        }));
+        setMenuItems(mappedItems);
+      } else {
+        throw new Error('Ma\'lumotlarni olishda xatolik yuz berdi');
+      }
+    } catch (error) {
+      console.error('Xatolik:', error);
+      toast({
+        title: "Xato",
+        description: "Menyu ma'lumotlarini yuklashda xatolik yuz berdi",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Boshlang'ich yuklash
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
+
   const filteredItems = menuItems.filter(item => {
-    const field = `name${selectedLang.charAt(0).toUpperCase()}${selectedLang.slice(1)}`;
+    const field = `name${selectedLang.charAt(0).toUpperCase()}${selectedLang.slice(1)}` as const;
     return item[field].toLowerCase().includes(searchTerm.toLowerCase());
   });
 
@@ -145,7 +171,7 @@ export default function AdminMenu() {
     }
   };
 
-  const validateForm = (isEdit: boolean = false) => {
+  const validateForm = (isEdit: boolean = false): boolean => {
     if (!formData.nameUz) {
       toast({
         title: "Xato",
@@ -207,30 +233,46 @@ export default function AdminMenu() {
     setIsLoading(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const formDataToSend = new FormData();
+      formDataToSend.append('menuNameUz', formData.nameUz);
+      formDataToSend.append('menuNameRu', formData.nameRu);
+      formDataToSend.append('menuNameEn', formData.nameEn);
+      formDataToSend.append('DescriptionUz', formData.descriptionUz || '');
+      formDataToSend.append('DescriptionRu', formData.descriptionRu || '');
+      formDataToSend.append('DescriptionEn', formData.descriptionEn || '');
+      formDataToSend.append('MenuCategory', formData.type);
+      formDataToSend.append('Price', formData.price);
+      if (formData.image) {
+        formDataToSend.append('Image', formData.image);
+      } else {
+        throw new Error('Rasm majburiy, fayl tanlanmadi!');
+      }
 
-      const newItem = {
-        id: Date.now().toString(),
-        ...formData,
-        price: parseFloat(formData.price),
-        image: formData.image
-          ? URL.createObjectURL(formData.image)
-          : 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
-      };
-
-      setMenuItems(prev => [...prev, newItem]);
-      setShowAddModal(false);
-      setFormData(initialFormData);
-      setPreviewImage(null);
-
-      toast({
-        title: "Muvaffaqiyatli!",
-        description: "Yangi menyu qo'shildi",
+      const response = await fetch(`${API_BASE_URL}/api/menu`, {
+        method: 'POST',
+        body: formDataToSend,
       });
+
+      if (response.ok) {
+        const result = await response.json();
+        await fetchMenuItems(); // Yangi ma'lumotlarni olish
+        setShowAddModal(false);
+        setFormData(initialFormData);
+        setPreviewImage(null);
+
+        toast({
+          title: "Muvaffaqiyatli!",
+          description: "Yangi menyu qo'shildi",
+        });
+      } else {
+        const errorText = await response.text();
+        throw new Error(`API xatosi: ${response.status} - ${errorText}`);
+      }
     } catch (error) {
+      console.error('Xatolik:', error);
       toast({
         title: "Xato",
-        description: "Menyu qo'shishda xatolik yuz berdi",
+        description: error instanceof Error ? error.message : "Menyu qo'shishda xatolik yuz berdi",
         variant: "destructive"
       });
     } finally {
@@ -249,34 +291,47 @@ export default function AdminMenu() {
     setIsLoading(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const formDataToSend = new FormData();
+      formDataToSend.append('menuNameUz', formData.nameUz);
+      formDataToSend.append('menuNameRu', formData.nameRu);
+      formDataToSend.append('menuNameEn', formData.nameEn);
+      formDataToSend.append('DescriptionUz', formData.descriptionUz || '');
+      formDataToSend.append('DescriptionRu', formData.descriptionRu || '');
+      formDataToSend.append('DescriptionEn', formData.descriptionEn || '');
+      formDataToSend.append('MenuCategory', formData.type);
+      formDataToSend.append('Price', formData.price);
+      if (formData.image) {
+        formDataToSend.append('Image', formData.image);
+      }
 
-      const updatedItem = {
-        ...selectedItem,
-        ...formData,
-        price: parseFloat(formData.price),
-        image: formData.image ? URL.createObjectURL(formData.image) : selectedItem.image
-      };
-
-      setMenuItems(prev => prev.map(item =>
-        item.id === selectedItem.id ? updatedItem : item
-      ));
-
-      setShowEditModal(false);
-      setSelectedItem(null);
-      setFormData(initialFormData);
-      setPreviewImage(null);
-      setIsFormChanged(false);
-
-      toast({
-        title: "Muvaffaqiyatli!",
-        description: "Menyu yangilandi",
+      const response = await fetch(`${API_BASE_URL}/api/menu/${selectedItem.id}`, {
+        method: 'PUT',
+        body: formDataToSend,
       });
+
+      if (response.ok) {
+        const updatedItem = await response.json();
+        await fetchMenuItems(); // Yangi ma'lumotlarni olish
+        setShowEditModal(false);
+        setSelectedItem(null);
+        setFormData(initialFormData);
+        setPreviewImage(null);
+        setIsFormChanged(false);
+
+        toast({
+          title: 'Muvaffaqiyatli!',
+          description: 'Menyu yangilandi',
+        });
+      } else {
+        const errorText = await response.text();
+        throw new Error(`API xatosi: ${response.status} - ${errorText}`);
+      }
     } catch (error) {
+      console.error('Xatolik:', error);
       toast({
-        title: "Xato",
-        description: "Menyu yangilashda xatolik yuz berdi",
-        variant: "destructive"
+        title: 'Xato',
+        description: error instanceof Error ? error.message : 'Menyu yangilashda xatolik yuz berdi',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -289,20 +344,28 @@ export default function AdminMenu() {
     setIsLoading(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      setMenuItems(prev => prev.filter(item => item.id !== selectedItem.id));
-      setShowDeleteModal(false);
-      setSelectedItem(null);
-
-      toast({
-        title: "Muvaffaqiyatli!",
-        description: "Menyu o'chirildi",
+      const response = await fetch(`${API_BASE_URL}/api/menu/${selectedItem.id}`, {
+        method: 'DELETE',
       });
+
+      if (response.ok) {
+        await fetchMenuItems(); // Yangi ma'lumotlarni olish
+        setShowDeleteModal(false);
+        setSelectedItem(null);
+
+        toast({
+          title: "Muvaffaqiyatli!",
+          description: "Menyu o'chirildi",
+        });
+      } else {
+        const errorText = await response.text();
+        throw new Error(`API xatosi: ${response.status} - ${errorText}`);
+      }
     } catch (error) {
+      console.error('Xatolik:', error);
       toast({
         title: "Xato",
-        description: "Menyu o'chirishda xatolik yuz berdi",
+        description: error instanceof Error ? error.message : "Menyu o'chirishda xatolik yuz berdi",
         variant: "destructive"
       });
     } finally {
@@ -310,7 +373,7 @@ export default function AdminMenu() {
     }
   };
 
-  const openEditModal = (item: any) => {
+  const openEditModal = (item: MenuItem) => {
     setSelectedItem(item);
     setFormData({
       nameUz: item.nameUz,
@@ -328,14 +391,21 @@ export default function AdminMenu() {
     setIsFormChanged(false);
   };
 
-  const openDeleteModal = (item: any) => {
+  const openDeleteModal = (item: MenuItem) => {
     setSelectedItem(item);
     setShowDeleteModal(true);
   };
 
-  const openViewModal = (item: any) => {
+  const openViewModal = (item: MenuItem) => {
     setSelectedItem(item);
     setShowViewModal(true);
+  };
+
+  const openAddModal = () => {
+    setFormData(initialFormData);
+    setSelectedItem(null);
+    setPreviewImage(null);
+    setShowAddModal(true);
   };
 
   // Tavsifni qisqartirish funksiyasi
@@ -362,29 +432,19 @@ export default function AdminMenu() {
   }, [formData, selectedItem]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-full flex flex-col">
       {/* Header */}
       <div className="flex flex-row flex-wrap justify-between items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Menyular boshqaruvi</h1>
           <p className="text-muted-foreground">Restoran menyularini boshqaring</p>
         </div>
-        <Button
-          onClick={() => {
-            setFormData(initialFormData);
-            setSelectedItem(null);
-            setPreviewImage(null);
-            setShowAddModal(true);
-          }}
-          variant="restaurant"
-        >
+        <Button onClick={openAddModal} variant="restaurant">
           <Plus className="h-4 w-4 mr-2" />
           Yangi menyu qo'shish
         </Button>
       </div>
-
-      {/* Search */}
-      <div className="flex items-center gap-4 flex-wrap">
+      <div className="flex items-center gap-4 w-full">
         <Select value={selectedLang} onValueChange={(val) => setSelectedLang(val as 'uz' | 'ru' | 'en')}>
           <SelectTrigger className="w-[80px]">
             <SelectValue placeholder="Til" />
@@ -395,103 +455,108 @@ export default function AdminMenu() {
             <SelectItem value="en">EN</SelectItem>
           </SelectContent>
         </Select>
-
         <div className="relative flex-grow">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder={`Menyu nomi (${selectedLang.toUpperCase()}) bo‘yicha qidirish...`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 w-full"
           />
         </div>
       </div>
 
       {/* Menu Items Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Menyular ro'yxati ({filteredItems.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-3 px-2">#</th>
-                  <th className="text-left py-3 px-2">Nomi(Uz)</th>
-                  <th className="text-left py-3 px-2">Nomi(Ru)</th>
-                  <th className="text-left py-3 px-2">Nomi(En)</th>
-                  <th className="text-left py-3 px-2">Tavsif(Uz)</th>
-                  <th className="text-left py-3 px-2">Tavsif(Ru)</th>
-                  <th className="text-left py-3 px-2">Tavsif(En)</th>
-                  <th className="text-left py-3 px-2">Narxi(so'm)</th>
-                  <th className="text-left py-3 px-2">Turi</th>
-                  <th className="text-left py-3 px-2">Rasm</th>
-                  <th className="text-center py-3 px-2">Amallar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredItems.map((item, index) => (
-                  <tr key={item.id} className="border-b hover:bg-muted/50">
-                    <td className="py-3 px-2">{index + 1}</td>
-                    <td className="py-3 px-2 font-medium">{item.nameUz}</td>
-                    <td className="py-3 px-2">{item.nameRu}</td>
-                    <td className="py-3 px-2">{item.nameEn}</td>
-                    <td className="py-3 px-2">{truncateDescription(item.descriptionUz)}</td>
-                    <td className="py-3 px-2">{truncateDescription(item.descriptionRu)}</td>
-                    <td className="py-3 px-2">{truncateDescription(item.descriptionEn)}</td>
-                    <td className="py-3 px-2">{item.price.toLocaleString()}</td>
-                    <td className="py-3 px-2">
-                      <Badge variant="secondary">
-                        {menuTypes.find(type => type.value === item.type)?.label}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-2">
-                      <img
-                        src={item.image}
-                        alt={item.nameUz}
-                        className="w-12 h-12 object-cover rounded-lg"
-                      />
-                    </td>
-                    <td className="py-3 px-2">
-                      <div className="flex space-x-2 justify-center">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openViewModal(item)}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openEditModal(item)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openDeleteModal(item)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </td>
+      <div className="flex-1 overflow-y-auto min-h-0">
+        <Card>
+          <CardHeader>
+            <CardTitle>Menyular ro'yxati ({filteredItems.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-3 px-2">#</th>
+                    <th className="text-left py-3 px-2">Nomi(Uz)</th>
+                    <th className="text-left py-3 px-2">Nomi(Ru)</th>
+                    <th className="text-left py-3 px-2">Nomi(En)</th>
+                    <th className="text-left py-3 px-2">Tavsif(Uz)</th>
+                    <th className="text-left py-3 px-2">Tavsif(Ru)</th>
+                    <th className="text-left py-3 px-2">Tavsif(En)</th>
+                    <th className="text-left py-3 px-2">Narxi(so'm)</th>
+                    <th className="text-left py-3 px-2">Turi</th>
+                    <th className="text-left py-3 px-2">Rasm</th>
+                    <th className="text-center py-3 px-2">Amallar</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredItems.map((item, index) => (
+                    <tr key={item.id} className="border-b hover:bg-muted/50">
+                      <td className="py-3 px-2">{index + 1}</td>
+                      <td className="py-3 px-2 font-medium">{item.nameUz}</td>
+                      <td className="py-3 px-2">{item.nameRu}</td>
+                      <td className="py-3 px-2">{item.nameEn}</td>
+                      <td className="py-3 px-2">{truncateDescription(item.descriptionUz)}</td>
+                      <td className="py-3 px-2">{truncateDescription(item.descriptionRu)}</td>
+                      <td className="py-3 px-2">{truncateDescription(item.descriptionEn)}</td>
+                      <td className="py-3 px-2">{item.price.toLocaleString()}</td>
+                      <td className="py-3 px-2">
+                        <Badge variant="secondary">
+                          {menuTypes.find(type => type.value === item.type)?.label}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-2">
+                        <img
+                          src={item.image}
+                          alt={item.nameUz}
+                          className="w-12 h-12 object-cover rounded-lg"
+                        />
+                      </td>
+                      <td className="py-3 px-2">
+                        <div className="flex space-x-2 justify-center">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openViewModal(item)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openEditModal(item)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openDeleteModal(item)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-            {filteredItems.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">Hech qanday menyu topilmadi</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              {isLoading ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground animate-pulse">Ma'lumotlar yuklanmoqda...</p>
+                </div>
+              ) : filteredItems.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Hech qanday menyu topilmadi</p>
+                </div>
+              ) : null}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Add Modal */}
       <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
