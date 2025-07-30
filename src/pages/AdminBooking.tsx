@@ -75,6 +75,7 @@ export default function AdminBookings() {
                 description: "Bron holati muvaffaqiyatli o'zgartirildi.",
                 duration: 3000,
             });
+            await fetchBookings();
 
         } catch (error) {
             // 5. Xatolik bo‘lsa — holatni orqaga qaytaramiz
