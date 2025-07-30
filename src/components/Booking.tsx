@@ -85,18 +85,29 @@ export function Booking({ language }: BookingProps) {
     setIsLoading(true);
 
     try {
-      const fullPhone = '+998' + formData.phone.replace(/\s/g, '');
+      const response = await fetch('http://45.92.173.180:5043/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.name,
+          phone: '+998' + formData.phone.replace(/\s/g, '')
+        }),
+      });
 
-      // Simulated API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const data = await response.json();
 
-      setIsSubmitted(true);
-      toast({ title: t.success, description: t.successMessage });
-
-      setTimeout(() => {
-        setIsSubmitted(false);
-        setFormData({ name: '', phone: '' });
-      }, 3000);
+      if (response.ok && data.message?.toLowerCase().includes("qabul qilindi")) {
+        setIsSubmitted(true);
+        toast({ title: t.success, description: data.message });
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: '', phone: '' });
+        }, 3000);
+      } else {
+        throw new Error(data.message || 'Xatolik yuz berdi');
+      }
     } catch (error) {
       toast({
         title: 'Xato',
@@ -108,6 +119,7 @@ export function Booking({ language }: BookingProps) {
       setIsLoading(false);
     }
   };
+
 
   return (
     <section id="booking" className="py-20 bg-gradient-primary/5">

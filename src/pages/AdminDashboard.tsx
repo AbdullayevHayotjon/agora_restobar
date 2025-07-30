@@ -76,7 +76,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 className="w-[120px] sm:w-[120px] lg:w-[120px] object-contain" // ← kerak bo‘lsa o‘lchamni moslang
               />
             </div>
-            
+
           </div>
         </div>
 
@@ -86,8 +86,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               key={item.id}
               variant={isActivePath(item.path) ? "default" : "ghost"}
               className={`w-full justify-start text-left h-12 ${isActivePath(item.path)
-                  ? 'bg-primary text-primary-foreground shadow-md'
-                  : 'hover:bg-accent'
+                ? 'bg-primary text-primary-foreground shadow-md'
+                : 'hover:bg-accent'
                 }`}
               onClick={() => handleNavigation(item.path)}
             >
@@ -110,7 +110,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1 lg:ml-0 h-screen overflow-hidden"> {/* ← scrollni boshqarish uchun */}
         {/* Hamburger menu faqat mobil uchun */}
         <div className="px-4 py-3 lg:hidden">
           <Button
@@ -122,8 +122,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           </Button>
         </div>
 
-        {/* Main content area */}
-        <main className="p-4 lg:p-6">
+        {/* Main content area (scrollable) */}
+        <main className="h-[calc(100vh-56px)] overflow-y-auto p-4 lg:p-6"> {/* ← scroll aynan shu yerda */}
           <Outlet />
         </main>
       </div>
