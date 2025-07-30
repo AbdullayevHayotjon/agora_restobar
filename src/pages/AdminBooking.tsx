@@ -18,43 +18,81 @@ interface Booking {
 export default function AdminBookings() {
     const [bookings, setBookings] = useState<Booking[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchType, setSearchType] = useState('name');
+    const [searchType, setSearchType] = useState<'name' | 'phone'>('name');
     const [isLoading, setIsLoading] = useState(true);
     const { toast } = useToast();
 
-    useEffect(() => {
-        const fetchBookings = async () => {
-            try {
-                setIsLoading(true);
-                const response = await fetch(`${API_BASE_URL}/api/bookings`);
-                const data = await response.json();
-                setBookings(data.$values);
-                setIsLoading(false);
-            } catch (error) {
-                console.error("API xatolik:", error);
-                setIsLoading(false);
-                toast({
-                    title: "Xatolik",
-                    description: "Bron ma'lumotlarini olishda xatolik yuz berdi.",
-                    variant: "destructive"
-                });
-            }
-        };
+    // 🔁 Bronlarni olib keluvchi umumiy funksiya
+    const fetchBookings = async () => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`${API_BASE_URL}/api/bookings`);
+            const data = await response.json();
+            setBookings(data.$values);
+            setIsLoading(false);
+        } catch (error) {
+            console.error("API xatolik:", error);
+            setIsLoading(false);
+            toast({
+                title: "Xatolik",
+                description: "Bron ma'lumotlarini olishda xatolik yuz berdi.",
+                variant: "destructive"
+            });
+        }
+    };
 
+    // ✅ Faqat 1 marta ma'lumotni olish
+    useEffect(() => {
         fetchBookings();
-        // const interval = setInterval(fetchBookings, 5000);
-        // return () => clearInterval(interval);
     }, []);
 
-
+    // 🔄 Holatni o'zgartiruvchi va so‘ngra qayta yuklovchi funksiya
     const toggleStatus = async (bookingId: string) => {
+        // 1. Avvalgi holatni olish
+        const previous = bookings.find(b => b.id === bookingId);
+        if (!previous) return;
+
+        // 2. Darhol UI-ni yangilaymiz
         setBookings(prev =>
-            prev.map(booking =>
-                booking.id === bookingId ? { ...booking, isConfirmed: !booking.isConfirmed } : booking
+            prev.map(b =>
+                b.id === bookingId ? { ...b, isConfirmed: !b.isConfirmed } : b
             )
         );
-        toast({ title: "Holat o'zgartirildi", duration: 3000 });
+
+        try {
+            // 3. API so‘rovi
+            const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}`, {
+                method: 'PUT',
+            });
+
+            if (!response.ok) {
+                throw new Error('Server xatolikka uchradi');
+            }
+
+            // 4. Hammasi yaxshi bo‘lsa — Toast chiqaramiz
+            toast({
+                title: "Holat o'zgartirildi",
+                description: "Bron holati muvaffaqiyatli o'zgartirildi.",
+                duration: 3000,
+            });
+
+        } catch (error) {
+            // 5. Xatolik bo‘lsa — holatni orqaga qaytaramiz
+            console.error("Toggle xatolik:", error);
+            setBookings(prev =>
+                prev.map(b =>
+                    b.id === bookingId ? { ...b, isConfirmed: previous.isConfirmed } : b
+                )
+            );
+
+            toast({
+                title: "Xatolik",
+                description: "Holatni o'zgartirishda muammo yuz berdi.",
+                variant: "destructive",
+            });
+        }
     };
+
 
     const filteredBookings = bookings.filter(booking =>
         searchType === 'name'
@@ -71,7 +109,7 @@ export default function AdminBookings() {
                     <p className="text-muted-foreground">Foydalanuvchi bronlarini boshqaring</p>
                 </div>
                 <div className="flex items-center gap-4 w-full">
-                    <Select value={searchType} onValueChange={setSearchType}>
+                    <Select value={searchType} onValueChange={(val) => setSearchType(val as 'name' | 'phone')}>
                         <SelectTrigger className="w-[200px] truncate">
                             <SelectValue placeholder="Qidiruv turi" />
                         </SelectTrigger>
@@ -92,7 +130,7 @@ export default function AdminBookings() {
                 </div>
             </div>
 
-            {/* Jadval (faqat shu qism scroll bo‘ladi) */}
+            {/* Jadval (scroll qismi) */}
             <div className="flex-1 overflow-y-auto min-h-0">
                 <Card>
                     <CardHeader>
