@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Calendar, User, Phone, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { API_BASE_URL } from '@/lib/constants';
 
 type Language = 'uz' | 'ru' | 'en';
 
@@ -85,7 +86,7 @@ export function Booking({ language }: BookingProps) {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://45.92.173.180:5043/api/bookings', {
+      const response = await fetch(`${API_BASE_URL}/api/bookings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

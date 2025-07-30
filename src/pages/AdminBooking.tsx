@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { API_BASE_URL } from '@/lib/constants';
 
 interface Booking {
     id: string;
@@ -25,9 +26,9 @@ export default function AdminBookings() {
         const fetchBookings = async () => {
             try {
                 setIsLoading(true);
-                const response = await fetch('http://45.92.173.180:5043/api/bookings');
+                const response = await fetch(`${API_BASE_URL}/api/bookings`);
                 const data = await response.json();
-                setBookings(data.$values); // <<— asosiy o‘zgarish
+                setBookings(data.$values);
                 setIsLoading(false);
             } catch (error) {
                 console.error("API xatolik:", error);
@@ -41,8 +42,8 @@ export default function AdminBookings() {
         };
 
         fetchBookings();
-        const interval = setInterval(fetchBookings, 5000);
-        return () => clearInterval(interval);
+        // const interval = setInterval(fetchBookings, 5000);
+        // return () => clearInterval(interval);
     }, []);
 
 
