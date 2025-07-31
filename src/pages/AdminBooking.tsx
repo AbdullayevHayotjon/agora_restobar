@@ -26,7 +26,7 @@ export default function AdminBookings() {
     const fetchBookings = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`${API_BASE_URL}/api/bookings`);
+            const response = await fetch(`${API_BASE_URL}/api/booking`);
             const data = await response.json();
             setBookings(data.$values);
             setIsLoading(false);
@@ -61,7 +61,7 @@ export default function AdminBookings() {
 
         try {
             // 3. API so‘rovi
-            const response = await fetch(`${API_BASE_URL}/api/bookings/${bookingId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/booking/status/${bookingId}`, {
                 method: 'PUT',
             });
 
