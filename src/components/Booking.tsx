@@ -86,7 +86,7 @@ export function Booking({ language }: BookingProps) {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/bookings`, {
+      const response = await fetch(`${API_BASE_URL}/api/booking`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
