@@ -204,14 +204,6 @@ export function Footer({ language, theme }: FooterProps) {
             <p className="text-muted-foreground text-sm">
               © {currentYear} AGORA resto&bar. {t.rights}
             </p>
-
-            {/* Admin Link */}
-            <a
-              href="/admin"
-              className="text-xs text-muted-foreground/50 hover:text-primary transition-colors"
-            >
-              Admin Panel
-            </a>
           </div>
         </div>
       </div>

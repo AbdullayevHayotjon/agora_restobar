@@ -201,14 +201,12 @@ export function News({ language }: NewsProps) {
                 <div className="relative h-64 md:h-80 rounded-lg overflow-hidden">
                   {getMediaType(selectedNews.mediaType) === 'video' ? (
                     <video
-                      controls
-                      controlsList="nodownload nofullscreen noremoteplayback"
                       autoPlay
+                      loop
+                      playsInline
                       className="w-full h-full object-cover"
-                      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                       src={resolveUrl(selectedNews.mediaUrl)}
-                    >
-                    </video>
+                    />
                   ) : (
                     <img
                       src={resolveUrl(selectedNews.mediaUrl)}
