@@ -41,8 +41,8 @@ interface NavbarProps {
   activeSection: string;
   language: Language;
   setLanguage: (lang: Language) => void;
-  theme: 'light' | 'dark';
-  setTheme: (theme: 'light' | 'dark') => void;
+  theme: 'dark' | 'light';
+  setTheme: (theme: 'dark' | 'light') => void;
 }
 
 export function Navbar({ activeSection, language, setLanguage, theme, setTheme }: NavbarProps) {
@@ -132,7 +132,7 @@ export function Navbar({ activeSection, language, setLanguage, theme, setTheme }
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               >
                 {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
               </Button>
