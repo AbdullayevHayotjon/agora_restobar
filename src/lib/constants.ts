@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'http://45.138.159.86:5043';
+export const API_BASE_URL = 'https://api.agorarestobar.uz';
